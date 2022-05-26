@@ -1,0 +1,6 @@
+[submodule "dotbot2"]
+	path = dotbot
+	url = https://github.com/anishathalye/dotbot
+	ignore = dirty
+[submodule "dotbot"]
+	ignore = dirty

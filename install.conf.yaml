@@ -4,9 +4,6 @@
       force: true
       create: true
 
-- brewfile:
-  - Brewfile
-
 - clean: ['~']
 
 - link:
@@ -18,4 +15,3 @@
 
 - shell:
   - [git submodule update --init --recursive, Installing submodules] 
-  - [sudo apt-get install tmux]
