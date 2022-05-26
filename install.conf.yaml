@@ -4,6 +4,9 @@
       force: true
       create: true
 
+- brewfile:
+  - Brewfile
+
 - clean: ['~']
 
 - link:
@@ -14,4 +17,5 @@
     /usr/local/bin/li: commands/li
 
 - shell:
-  - [git submodule update --init --recursive, Installing submodules]
+  - [git submodule update --init --recursive, Installing submodules] 
+  - [sudo apt-get install tmux]
