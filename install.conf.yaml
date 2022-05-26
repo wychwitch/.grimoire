@@ -1,0 +1,17 @@
+- defaults:
+    link:
+      relink: true
+      force: true
+      create: true
+
+- clean: ['~']
+
+- link:
+    ~/.gitconfig: .gitconfig
+    ~/.zshrc: .zshrc
+    ~/.ssh/config: ssh_config
+    ~/.posh-themes: .posh-themes
+    /usr/local/bin/li: commands/li
+
+- shell:
+  - [git submodule update --init --recursive, Installing submodules]
