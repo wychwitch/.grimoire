@@ -13,5 +13,3 @@
     ~/.posh-themes/craver.json: posh-themes/craver.json
     /usr/local/bin/li: commands/li
 
-- shell:
-  - [git submodule update --init --recursive, Installing submodules] 

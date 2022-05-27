@@ -103,6 +103,8 @@ source $ZSH/oh-my-zsh.sh
 eval "$(oh-my-posh init zsh --config ~/.posh-themes/craver.json)"
 eval "$(ssh-agent -s)"
 
+export PATH="$HOME/.local/bin:$PATH"
+
 export LD_LIBRARY_PATH=/home/linuxbrew/.linuxbrew/lib:$LD_LIBRARY_PATH
 
 NVM_DIR="$HOME/.nvm"
