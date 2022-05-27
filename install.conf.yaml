@@ -7,11 +7,9 @@
 - clean: ['~']
 
 - link:
-    ~/.gitconfig: .gitconfig
-    ~/.zshrc: .zshrc
+    ~/.gitconfig: gitconfig
+    ~/.zshrc: zshrc
     ~/.ssh/config: ssh_config
-    ~/.posh-themes: .posh-themes
+    ~/.posh-themes/craver.json: posh-themes/craver.json
     /usr/local/bin/li: commands/li
 
-- shell:
-  - [git submodule update --init --recursive, Installing submodules] 

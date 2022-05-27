@@ -4,7 +4,8 @@ The collection of all my dotfiles
 ## steps
 install these
 ```bash
-apt-get install ssh git
+apt-get install ssh git python3 pip3
+pip install dotbot
 ```
 clone this repo
 
@@ -18,9 +19,9 @@ install the brew bundle
 brew bundle --file ~/.grimoire/Brewfile
 ```
 
-run the summon script
+run the dotbot installation
 ```
-sh summon.sh
+dotbot -c install.conf.yaml
 ```
 ## todo
 - [ ] learn how to use *defaults* to restore system prefs if needed
