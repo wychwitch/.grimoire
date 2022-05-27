@@ -1,0 +1,25 @@
+config:
+        backup: true
+        create: true
+        dotpath: ./
+        workdir: ~/.grimoire/
+dotfiles:
+        d_posh_themes:
+                dst: ~/.posh_themes
+                src: posh_themes
+        f_zshrc:
+                dst: ~/.zshrc
+                src: zshrc
+        f_ssh_config:
+                dst: ~/.ssh/config
+                src: ssh_config
+        f_gitconfig:
+                dst: ~/.gitconfig
+                src: gitconfig
+profiles: 
+        Carbuncle:
+                dotfiles:
+                        - d_posh_themes
+                        - f_zshrc
+                        - f_ssh_config
+                        - f_gitconfig
