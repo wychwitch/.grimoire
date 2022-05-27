@@ -1,0 +1,2 @@
+alias li="exa -lha --git"
+alias status="git status"

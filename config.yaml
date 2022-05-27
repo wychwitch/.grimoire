@@ -7,15 +7,23 @@ dotfiles:
         d_posh_themes:
                 dst: ~/.posh-themes
                 src: posh-themes
+                link: link
         f_zshrc:
                 dst: ~/.zshrc
                 src: zshrc
+                link: link
         f_ssh_config:
                 dst: ~/.ssh/config
                 src: ssh_config
+                link: link
         f_gitconfig:
                 dst: ~/.gitconfig
                 src: gitconfig
+                link: link
+        f_aliases:
+                dst: ~/.aliases
+                src: aliases
+                link: link
 profiles: 
         Carbuncle:
                 dotfiles:
@@ -23,3 +31,4 @@ profiles:
                         - f_zshrc
                         - f_ssh_config
                         - f_gitconfig
+                        - f_aliases
