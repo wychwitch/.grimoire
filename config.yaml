@@ -5,8 +5,8 @@ config:
         workdir: ~/.grimoire/
 dotfiles:
         d_posh_themes:
-                dst: ~/.posh_themes
-                src: posh_themes
+                dst: ~/.posh-themes
+                src: posh-themes
         f_zshrc:
                 dst: ~/.zshrc
                 src: zshrc
