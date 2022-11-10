@@ -1,34 +1,48 @@
 config:
-        backup: true
-        create: true
-        dotpath: ./
-        workdir: ~/.grimoire/
+  backup: true
+  create: true
+  dotpath: ./
+  workdir: ~/.grimoire/
+  minversion: 1.10.3
 dotfiles:
-        d_posh_themes:
-                dst: ~/.posh-themes
-                src: posh-themes
-                link: link
-        f_zshrc:
-                dst: ~/.zshrc
-                src: zshrc
-                link: link
-        f_ssh_config:
-                dst: ~/.ssh/config
-                src: ssh_config
-                link: link
-        f_gitconfig:
-                dst: ~/.gitconfig
-                src: gitconfig
-                link: link
-        f_aliases:
-                dst: ~/.aliases
-                src: aliases
-                link: link
-profiles: 
-        Carbuncle:
-                dotfiles:
-                        - d_posh_themes
-                        - f_zshrc
-                        - f_ssh_config
-                        - f_gitconfig
-                        - f_aliases
+  d_posh_themes:
+    dst: ~/.posh-themes
+    src: posh-themes
+    link: absolute
+  f_zshrc:
+    dst: ~/.zshrc
+    src: zshrc
+    link: absolute
+  f_ssh_config:
+    dst: ~/.ssh/config
+    src: ssh_config
+    link: absolute
+  f_gitconfig:
+    dst: ~/.gitconfig
+    src: gitconfig
+    link: absolute
+  f_aliases:
+    dst: ~/.aliases
+    src: aliases
+    link: absolute
+  f_config:
+    dst: ~/.config
+    src: config
+    link: absolute
+profiles:
+  Carbuncle:
+    dotfiles:
+    - d_posh_themes
+    - f_zshrc
+    - f_ssh_config
+    - f_gitconfig
+    - f_aliases
+    - f_config
+  atelier:
+    dotfiles:
+    - d_posh_themes
+    - f_zshrc
+    - f_ssh_config
+    - f_gitconfig
+    - f_aliases
+    - f_config

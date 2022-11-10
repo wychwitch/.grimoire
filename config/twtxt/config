@@ -1,0 +1,11 @@
+[twtxt]
+nick = wych(witch)
+twtfile = /home/wych/www/atelierwy.ch/atelier/twtxt.txt
+twturl = https://atelierwy.ch/twtxt.txt
+disclose_identity = True
+character_limit = 140
+character_warning = 140
+
+[following]
+twtxt = https://buckket.org/twtxt_news.txt
+
