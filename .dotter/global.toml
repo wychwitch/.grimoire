@@ -1,0 +1,9 @@
+[starship.files]
+"starship.toml" = "~/.config/starship.toml"
+
+[nushell.files]
+"config.nu" = "~/.config/nushell/config.nu"
+"env.nu" = "~/.config/nushell/env.nu"
+
+[lvim.files]
+"lvim.lua" = "~/.config/lvim/config.lua"
