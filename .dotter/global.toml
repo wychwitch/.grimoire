@@ -9,4 +9,4 @@
 "files/lvim.lua" = "~/.config/lvim/config.lua"
 
 [nvim.files]
-"files/nvim" = "~/.config/nvim"
+"files/nvim" = {target="~/.config/nvim", type="symbolic", recurse=false}
