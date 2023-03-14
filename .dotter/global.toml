@@ -7,3 +7,6 @@
 
 [lvim.files]
 "files/lvim.lua" = "~/.config/lvim/config.lua"
+
+[nvim.files]
+"files/nvim" = "~/.config/nvim"
