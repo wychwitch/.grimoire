@@ -7,11 +7,60 @@ a global executable or a path to
 an executable
 ]]
 -- THESE ARE EXAMPLE CONFIGS FEEL FREE TO CHANGE TO WHATEVER YOU WANT
+lvim.plugins = {
+  {"gennaro-tedesco/nvim-peekup"},
+  {'hrsh7th/nvim-cmp'},
+  
+  {'epwalsh/obsidian.nvim',
+    require("obsidian").setup({
+    dir = "~/my-vault",
+      completion = {
+       nvim_cmp = true, -- if using nvim-cmp, otherwise set to false
+       }
+    }),
+    requires = {
+     'nvim-lua/plenary.nvim'
+    }
+  },
+  {"nvim-neorg/neorg",
+    run = ":Neorg sync-parsers", 
+    config = function()
+      require('neorg').setup {
+        load = {
+          ["core.defaults"] = {}, -- Loads default behaviour
+          ["core.norg.concealer"] = {}, -- Adds pretty icons to your documents
+          ["core.norg.completion"] = {
+            config ={
+              engine = "nvim-cmp",
+            }
+          },
+          ["core.integrations.treesitter"] = {},
+          ["core.mode"] = {},
+          ["core.integrations.nvim-cmp"] = {},
+          ["core.highlights"] = {},
+          ["core.norg.dirman"] = { -- Manages Neorg workspaces
+            config = {
+              workspaces = {
+                notes = "~/notes",  
+              },
+            },
+          },
+        },
+      }
+    end,
+      run = ":Neorg sync-parsers",
+      requires = "nvim-lua/plenary.nvim",
+  }
+}
+vim.opt.foldmethod = "expr" -- default is "normal"
+vim.opt.foldexpr = "nvim_treesitter#foldexpr()" -- default is ""
+vim.opt.foldenable = false -- if this option is true and fold method option is other than normal, every time a document is opened everything will be folded.
 vim.opt.wrap = true
 -- general
 lvim.log.level = "warn"
-lvim.format_on_save.enabled = false
+lvim.format_on_save.enabled = true 
 lvim.colorscheme = "lunar"
+table.insert(lvim.builtin.cmp.sources, { name = "neorg" })
 -- to disable icons and use a minimalist setup, uncomment the following
 -- lvim.use_icons = false
 
@@ -86,7 +135,19 @@ lvim.builtin.treesitter.ensure_installed = {
 
 lvim.builtin.treesitter.ignore_install = { "haskell" }
 lvim.builtin.treesitter.highlight.enable = true
+vim.api.nvim_create_autocmd('BufRead', {
+   callback = function()
+      vim.api.nvim_create_autocmd('BufWinEnter', {
+         once = true,
+         command = 'normal! zx'
+      })
+      vim.api.nvim_create_autocmd('BufWinEnter', {
+         once = true,
+         command = 'normal! zR'
+      })
 
+   end
+})
 -- generic LSP settings
 
 -- -- make sure server will always be installed even if the server is in skipped_servers list
