@@ -1,0 +1,5 @@
+#!/bin/bash
+
+sudo pacman -S bat neovim starship openssh nu -y
+
+./dotter
