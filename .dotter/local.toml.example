@@ -1,0 +1,6 @@
+packages = ["alacritty"]
+[files]
+"files/alacritty.yml" = "C:\\Users\\Blue\\AppData\\Roaming\\alacritty\\alacritty.yml"
+[variables]
+shell = "Persephone"
+directory = "\\\\wsl.localhost\\Persephone\\home\\wych"
