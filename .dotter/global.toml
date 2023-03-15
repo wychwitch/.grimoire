@@ -12,4 +12,7 @@
 "files/nvim" = {target="~/.config/nvim", type="symbolic", recurse=false}
 
 [alacritty.files]
-"files/alacritty.yml" = "%APPDATA%\\alacritty\\alacritty.yml"
+"files/alacritty.yml" = "C:\\Users\\Blue\\AppData\\Roaming\\alacritty\\alacritty.yml"
+[alacritty.variables]
+shell = "Powershell"
+directory = "None"
