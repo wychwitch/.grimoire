@@ -10,3 +10,6 @@
 
 [nvim.files]
 "files/nvim" = {target="~/.config/nvim", type="symbolic", recurse=false}
+
+[alacritty.files]
+"files/alacritty.yml" = "%APPDATA%\\alacritty\\alacritty.yml"

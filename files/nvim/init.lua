@@ -202,6 +202,7 @@ require("obsidian").setup({
     nvim_cmp = true, -- if using nvim-cmp, otherwise set to false
   }
 })
+require 'mind'.setup()
 -- [[ Setting options ]]
 -- See `:help vim.o`
 
