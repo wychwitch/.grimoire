@@ -11,8 +11,8 @@
 [nvim.files]
 "files/nvim" = {target="~/.config/nvim", type="symbolic", recurse=false}
 
-[alacritty.files]
-"files/alacritty.yml" = "C:\\Users\\Blue\\AppData\\Roaming\\alacritty\\alacritty.yml"
-[alacritty.variables]
+[wezterm.files]
+"files/wezterm.lua" = "C:\\Users\\Blue\\.config\\wezterm\\wezterm.lua"
+[wezterm.variables]
 shell = "Powershell"
 directory = "None"

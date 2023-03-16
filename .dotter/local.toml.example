@@ -1,6 +1,4 @@
-packages = ["alacritty"]
-[files]
-"files/alacritty.yml" = "C:\\Users\\Blue\\AppData\\Roaming\\alacritty\\alacritty.yml"
+packages = ["wezterm"]
 [variables]
 shell = "Persephone"
 directory = "\\\\wsl.localhost\\Persephone\\home\\wych"
