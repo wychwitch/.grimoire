@@ -20,7 +20,7 @@ return {
 			[[                   ▀████████▀▄███▀▀ ▀▀███▄▀████████▀                   ]],
 			[[                          ▄██▀▀         ▀▀██▄                          ]],
 			[[                       ▄▄▀▀                 ▀▀▄▄                       ]],
-			[[			       heir o█f light                            ]],
+			[[                            ~HEIR o█f HOPE~                            ]],
 		}
 		dashboard.section.buttons.val = {
 			dashboard.button("e", "  New file", ":ene <BAR> startinsert <CR>"),
