@@ -5,6 +5,9 @@
 "files/config.nu" = "~/.config/nushell/config.nu"
 "files/env.nu" = "~/.config/nushell/env.nu"
 
+[elvish.files]
+"files/rc.elv" = "~/.config/elvish/rc.elv"
+
 [lvim.files]
 "files/lvim.lua" = "~/.config/lvim/config.lua"
 
