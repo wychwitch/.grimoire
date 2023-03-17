@@ -2,7 +2,7 @@ local wezterm = require 'wezterm'
 
 return {
     font = wezterm.font 'Fantasque Sans Mono',
-    font_size = 26.0,
+    font_size = 20.0,
     color_scheme = "Catppuccin Frappe",
     default_prog = { "{{shell}}" },
     default_cwd = "{{directory}}",
@@ -11,6 +11,6 @@ return {
         left = '1cell',
         right = '1cell',
         top = '0.5cell',
-        bottom = '2cell',
+        bottom = '0.5cell',
     },
 }
