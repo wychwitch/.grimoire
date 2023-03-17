@@ -1,4 +1,4 @@
 packages = ["wezterm"]
 [variables]
 shell = "Persephone"
-directory = "\\\\wsl.localhost\\Persephone\\home\\wych"
+directory = "//wsl.localhost/Persephone/home/wych"
