@@ -17,5 +17,7 @@
 [wezterm.files]
 "files/wezterm.lua" = "C:\\Users\\Blue\\.config\\wezterm\\wezterm.lua"
 [wezterm.variables]
+font = "FantasqueSansMono NF"
+font_size = 16.0
 shell = "Powershell"
 directory = "None"
