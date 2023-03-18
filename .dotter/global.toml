@@ -25,7 +25,5 @@
 [wezterm.variables]
 font = "FantasqueSansMono NF"
 font_size = 16.0
-font_weight = "medium"
-font_italic = false
 shell = "Powershell"
 directory = "None"

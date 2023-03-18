@@ -1,7 +1,9 @@
+-- remember to save using noa like this -> :noa w
+
 local wezterm = require 'wezterm'
 
 return {
-    font = wezterm.font('{{font}}', { weight = "{{font_weight}}", italic = {{font_italic}} }),
+    font = wezterm.font '{{font}}',
     font_size = {{font_size}},
     color_scheme = "Catppuccin Frappe",
     default_prog = { "{{shell}}" },
