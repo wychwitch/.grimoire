@@ -1,16 +1,18 @@
 # .grimoire
 The collection of all my dotfiles
-
+## Programs
+bat
+exa
+zsh
+nushell
+elvish
+neovim
+rust
+brew
+wezterm (on host machine)
+emacs (on host machine)
 ## steps
-install these
-```bash
-apt-get install ssh git python3 pip3
-pip install dotbot
-```
-clone this repo
-
-also install [brew](https://brew.sh/)
-
+TODO: fill this out with new dotter workload
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
