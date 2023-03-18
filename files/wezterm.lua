@@ -1,7 +1,7 @@
 local wezterm = require 'wezterm'
 
 return {
-    font = wezterm.font '{{font}}',
+    font = wezterm.font('{{font}}', { weight = "{{font_weight}}", italic = {{font_italic}} }),
     font_size = {{font_size}},
     color_scheme = "Catppuccin Frappe",
     default_prog = { "{{shell}}" },
