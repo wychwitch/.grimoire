@@ -2,6 +2,7 @@
 The collection of all my dotfiles
 ## Programs
 + bat
++ arttime
 + exa
 + zsh
  + zsnap
