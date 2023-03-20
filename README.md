@@ -1,16 +1,24 @@
 # .grimoire
 The collection of all my dotfiles
 ## Programs
-bat
-exa
-zsh
-nushell
-elvish
-neovim
-rust
-brew
-wezterm (on host machine)
-emacs (on host machine)
++ bat
++ arttime
++ exa
++ zsh
+ + zsnap
++ nushell
++ elvish
++ neovim
++ rust
++ brew
++ wezterm (on host machine)
++ emacs (on host machine)
+
+```bash
+git clone --depth 1 -- https://github.com/marlonrichert/zsh-snap.git
+source zsh-snap/install.zsh
+```
+
 ## steps
 TODO: fill this out with new dotter workload
 ```bash

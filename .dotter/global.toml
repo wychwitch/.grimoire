@@ -12,13 +12,13 @@
 "files/lvim.lua" = "~/.config/lvim/config.lua"
 
 [nvim.files]
-"files/nvim" = {target="~/.config/nvim", type="symbolic", recurse=false}
+"files/nvim" = { target = "~/.config/nvim", type = "symbolic", recurse = false }
 
 [zsh.files]
 "files/zshrc" = "~/.zshrc"
 
 [bash.files]
-"files/bashrc"="~/.bashrc"
+"files/bashrc" = "~/.bashrc"
 
 [wezterm.files]
 "files/wezterm.lua" = "C:\\Users\\Blue\\.config\\wezterm\\wezterm.lua"
@@ -29,4 +29,4 @@ shell = "Powershell"
 directory = "None"
 
 [emacs.files]
-"files/emacs.d" = {target="C:\\Users\\Blue\\.emacs.d", type="symbolic", recurse=false}
+"files/emacs.d" = { target = "C:\\Users\\Blue\\.emacs.d", type = "symbolic", recurse = false }
