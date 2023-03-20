@@ -27,3 +27,5 @@ font = "FantasqueSansMono NF"
 font_size = 16.0
 shell = "Powershell"
 directory = "None"
+[emacs.files]
+"files/emacs.d" = {target="~/.emacs.d", type="symbolic", recurse=false}
