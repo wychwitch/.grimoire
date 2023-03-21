@@ -128,7 +128,7 @@ indentation width you prefer in the ~web-mode~ section.)
     :map evil-search-map
     ("c" . evil-ex-nohighlight)
     ("i" . imenu-list-smart-toggle) )
-  :custom
+  ;;:custom
   ;; ...
   :config
   (evil-mode 1)
