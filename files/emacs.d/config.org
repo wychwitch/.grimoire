@@ -59,88 +59,102 @@ indentation width you prefer in the ~web-mode~ section.)
     (global-set-key (kbd "C-x 2") #'ian/split-and-follow-horizontally)
     (global-set-key (kbd "C-x 3") #'ian/split-and-follow-vertically))
 #+END_SRC
-* Wych: Adding some support for leader keys
-#+BEGIN_SRC emacs-lisp
-(mapc #'define-prefix-command
-      '(evil-application-map
-        evil-buffer-map
-        evil-error-map
-        evil-file-map
-        evil-git-map
-        evil-global-leader-map
-        evil-insert-map
-        evil-jump-map
-        evil-option-map
-        evil-search-map
-        evil-tab-map))
-(use-package evil
-  :defer nil
-  :bind
-  ( :map evil-motion-state-map
-    ("SPC" . evil-global-leader-map)
-    ("M-SPC" . evil-global-leader-map)
-    :map evil-insert-state-map
-    ("M-SPC" . evil-global-leader-map)
-    :map evil-global-leader-map
-    ("a" . evil-application-map)
-    ("b" . evil-buffer-map)
-    ("f" . evil-file-map)
-    ("g" . evil-git-map)
-    ("i" . evil-insert-map)
-    ("j" . evil-jump-map)
-    ("o" . evil-option-map)
-    ("s" . evil-search-map)
-    ("u" . universal-argument)
-    ("w" . evil-window-map)
-    :map evil-window-map
-    ("o" . miciah/window-toggle-other-windows)
-    :map evil-buffer-map
-    ("b" . list-buffers)
-    ("B" . bury-buffer)
-    ("d" . kill-this-buffer)
-    ("e" . eval-buffer)
-    ("h" . miciah/switch-to-help-buffer)
-    ("m" . view-echo-area-messages)
-    ("s" . miciah/switch-to-scratch-buffer)
-    ("x" . kill-buffer-and-window)
-    :map evil-file-map
-    ("a" . write-file)
-    ("c" . copy-file)
-    ("f" . find-file)
-    ("i" . insert-file)
-    ("n" . fileloop-continue)
-    ("r" . recover-this-file)
-    ("R" . miciah/rename-file-and-buffer)
-    ("s" . save-buffer)
-    :map evil-jump-map
-    ("f" . find-function)
-    ("v" . find-variable)
-    :map evil-option-map
-    ("f" . display-fill-column-indicator-mode)
-    ("s" . window-toggle-side-windows)
-    ("l" . toggle-truncate-lines)
-    ("n" . display-line-numbers-mode)
-    ("d" . toggle-debug-on-error)
-    ("D" . toggle-debug-on-quit)
-    ("T" . miciah/toggle-themes)
-    :map evil-replace-state-map
-    ("M-SPC" . evil-global-leader-map)
-    :map evil-search-map
-    ("c" . evil-ex-nohighlight)
-    ("i" . imenu-list-smart-toggle) )
-  ;;:custom
-  ;; ...
-  :config
-  (evil-mode 1)
-  ;; ...
-  )
-#+END_SRC
 * Configuration for built-in packages
 Since we're using use-package as our package management system, we
 might as well try to organize under the same syntax as much as
 possible to keep the configuration consistent. The option
 ~use-package-always-ensure~ is turned on in ~init.el~, so we'll add
 ~:ensure nil~ when configuring the built-in packages.
+#+END_SRC
+** My stuff
+#+BEGIN_SRC emacs-lisp
+    (setq evil-want-keybinding nil)
+    ;;making sure recentf is working
+  (run-at-time nil (* 5 60) 'recentf-save-list)
+  ;;Mappings
+        (mapc #'define-prefix-command
+              '(evil-application-map
+                evil-buffer-map
+                evil-error-map
+                files
+                git
+                evil-global-leader-map
+                evil-insert-map
+                evil-jump-map
+                evil-option-map
+                search
+                evil-tab-map))
+        (use-package evil
+          :defer nil
+          :bind
+          ( :map evil-motion-state-map
+            ("SPC" . evil-global-leader-map)
+            ("M-SPC" . evil-global-leader-map)
+            :map evil-insert-state-map
+            ("M-SPC" . evil-global-leader-map)
+           :map evil-global-leader-map
+            ("a" . evil-application-map)
+            ("b" . evil-buffer-map)
+            ("f" . files)
+            (":" . execute-extended-command)
+            ("g" . git)
+            ("i" . evil-insert-map)
+            ("j" . evil-jump-map)
+            ("o" . evil-option-map)
+            ("s" . search)
+            ("u" . universal-argument)
+            ("w" . evil-window-map)
+            :map evil-window-map
+            ("o" . miciah/window-toggle-other-windows)
+            :map evil-buffer-map
+            ("b" . list-buffers)
+            ("B" . bury-buffer)
+            ("d" . kill-this-buffer)
+            ("e" . eval-buffer)
+            ("h" . miciah/switch-to-help-buffer)
+            ("m" . view-echo-area-messages)
+            ("s" . miciah/switch-to-scratch-buffer)
+            ("x" . kill-buffer-and-window)
+            :map files
+            ("a" . write-file)
+            ("c" . copy-file)
+            ("f" . find-file)
+            ("i" . insert-file)
+            ("n" . fileloop-continue)
+            ("r" . recentf-open-files)
+            ("R" . miciah/rename-file-and-buffer)
+            ("s" . save-buffer)
+            :map evil-jump-map
+            ("f" . find-function)
+            ("v" . find-variable)
+            :map evil-option-map
+            ("f" . display-fill-column-indicator-mode)
+            ("s" . window-toggle-side-windows)
+            ("l" . toggle-truncate-lines)
+            ("n" . display-line-numbers-mode)
+            ("d" . toggle-debug-on-error)
+            ("D" . toggle-debug-on-quit)
+            ("T" . miciah/toggle-themes)
+            :map evil-replace-state-map
+            ("M-SPC" . evil-global-leader-map)
+            :map search
+            ("c" . evil-ex-nohighlight)
+            ("i" . imenu-list-smart-toggle) )
+          ;;:custom
+          ;; ...
+          :config
+          (evil-mode 1)
+          ;; ...
+          )
+      (use-package evil-collection
+        :after evil
+        :custom (evil-collection-key-blacklist '("SPC"))
+        :config
+        (evil-collection-init)
+        (evil-collection-buff-menu-setup)
+        (evil-collection-unimpaired-setup)
+        ;; ...
+        )
 #+END_SRC
 ** Modernize selection behavior
 Replace the active region just by typing text, just like modern
