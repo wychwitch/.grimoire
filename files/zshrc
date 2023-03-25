@@ -1,4 +1,3 @@
-source ~/.zshplugins/zsh-snap/znap.zsh
+source ~/.config/zsh/zsh-snap/znap.zsh
 eval "$(starship init zsh)"
 alias ls="exa"
-znap source marlonrichert/zsh-autocomplete
