@@ -4,7 +4,7 @@ local wezterm = require 'wezterm'
 
 return {
     font = wezterm.font '{{font}}',
-    font_size = { { font_size } },
+    font_size = {{font_size}},
     color_scheme = "rose-pine",
     default_prog = { "{{shell}}" },
     default_cwd = "{{directory}}",
