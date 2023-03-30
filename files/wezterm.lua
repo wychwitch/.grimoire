@@ -5,7 +5,7 @@ local wezterm = require 'wezterm'
 return {
     font = wezterm.font '{{font}}',
     font_size = {{font_size}},
-    color_scheme = "aikofog (terminal.sexy",
+    color_scheme = "aikofog (terminal.sexy)",
     default_prog = { "{{shell}}" },
     default_cwd = "{{directory}}",
     default_cursor_style = 'BlinkingUnderline',
