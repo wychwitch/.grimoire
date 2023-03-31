@@ -24,7 +24,7 @@ local themes = {
 return {
     font = wezterm.font '{{font}}',
     font_size = {{font_size}},
-    color_scheme = themes[1],
+    color_scheme = themes[15],
     default_prog = { "{{shell}}" },
     default_cwd = "{{directory}}",
     default_cursor_style = 'BlinkingUnderline',
