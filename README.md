@@ -13,7 +13,7 @@ The collection of all my dotfiles
 + rust
 + brew
 + wezterm (on host machine)
-+ emacs (on host machine)
++ emacs (on host machine) 
 
 #### Commands
 ```bash
