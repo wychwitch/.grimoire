@@ -1,9 +1,9 @@
-# .grimoire
+.grimoire
 The collection of all my dotfiles
 ## Programs
 ### (arch) linux
-+ bat
-+ arttime
++ *bat*
++ **arttime**
 + exa
 + zsh
  + zsnap
@@ -15,12 +15,15 @@ The collection of all my dotfiles
 + wezterm (on host machine)
 + emacs (on host machine) 
 
+*wwii*
+__uh__
+**wow**
+
 #### Commands
 ```bash
 git clone --depth 1 -- https://github.com/marlonrichert/zsh-snap.git
 source zsh-snap/install.zsh
-```
-
+```z
 ### Windows
 + win32yank
 
