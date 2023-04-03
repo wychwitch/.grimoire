@@ -260,7 +260,9 @@ vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = tr
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
 -- * custom *
-vim.keymap.set('n', '<leader>s', "nil", { desc = "search" })
+vim.keymap.set('n', '<leader>s', "nil", { desc = "search " })
+vim.keymap.set('n', '<leader>f', "nil", { desc = "file " })
+vim.keymap.set('n', '<leader>z', "nil", { desc = "zen mode " })
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -305,9 +307,9 @@ vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { de
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
 local truezen = require('true-zen')
-vim.keymap.set('n', '<leader>zf', truezen.focus, { noremap = true })
-vim.keymap.set('n', '<leader>zm', truezen.minimalist, { noremap = true })
-vim.keymap.set('n', '<leader>za', truezen.ataraxis, { noremap = true })
+vim.keymap.set('n', '<leader>zf', truezen.focus, { noremap = true, desc = '[Z]en [F]ocus' })
+vim.keymap.set('n', '<leader>zm', truezen.minimalist, { noremap = true, desc = '[Z]en [M]inimal' })
+vim.keymap.set('n', '<leader>za', truezen.ataraxis, { noremap = true, desc = '[Z]en [A]taraxis' })
 -- [[ Configure Treesitter ]]
 -- See `:help nvim-treesitter`
 require('nvim-treesitter.configs').setup {
