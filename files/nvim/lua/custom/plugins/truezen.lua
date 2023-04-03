@@ -10,10 +10,13 @@ return {
 				ataraxis = {
 					callbacks = {
 						-- run functions when opening/closing Ataraxis mode
-						open_pos = vim.cmd('PencilSoft')
-						--close_pos = function()
-						--	require('lualine').hide({ unhide = true })
-						--end,
+						open_pos = function()
+							vim.cmd('PencilSoft');
+							vim.cmd('Limelight');
+						end,
+						close_pos = function()
+							vim.cmd('Limelight!');
+						end,
 					},
 				},
 			},
