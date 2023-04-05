@@ -40,7 +40,8 @@ P.S. You can delete this when you're done too. It's your config now :)
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
-
+vim.g.vim_markdown_conceal = 3
+vim.wo.foldenable = false
 -- Install package manager
 --    https://github.com/folke/lazy.nvim
 --    `:help lazy.nvim.txt` for more info
@@ -120,7 +121,7 @@ require('lazy').setup({
     'navarasu/onedark.nvim',
     priority = 1000,
     config = function()
-      vim.cmd.colorscheme 'onedark'
+      vim.cmd.colorscheme 'duskfox'
     end,
   },
 
@@ -131,7 +132,7 @@ require('lazy').setup({
     opts = {
       options = {
         icons_enabled = false,
-        theme = 'onedark',
+        theme = 'duskfox',
         component_separators = '|',
         section_separators = '',
       },
@@ -227,6 +228,9 @@ vim.o.breakindent = true
 -- Save undo history
 vim.o.undofile = true
 
+vim.o.conceallevel = 3
+
+
 -- Case insensitive searching UNLESS /C or capital in search
 vim.o.ignorecase = true
 vim.o.smartcase = true
@@ -256,7 +260,9 @@ vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = tr
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
 -- * custom *
-vim.keymap.set('n', '<leader>s', "nil", { desc = "search" })
+vim.keymap.set('n', '<leader>s', "nil", { desc = "+search" })
+vim.keymap.set('n', '<leader>f', "nil", { desc = "+file" })
+vim.keymap.set('n', '<leader>z', "nil", { desc = "+zen mode" })
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -295,13 +301,15 @@ vim.keymap.set('n', '<leader>/', function()
     previewer = false,
   })
 end, { desc = '[/] Fuzzily search in current buffer' })
-
-vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
+vim.keymap.set('n', '<leader>ff', require('telescope.builtin').find_files, { desc = '[F]ind [F]iles' })
 vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
 vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
-
+local truezen = require('true-zen')
+vim.keymap.set('n', '<leader>zf', truezen.focus, { noremap = true, desc = '[Z]en [F]ocus' })
+vim.keymap.set('n', '<leader>zm', truezen.minimalist, { noremap = true, desc = '[Z]en [M]inimal' })
+vim.keymap.set('n', '<leader>za', truezen.ataraxis, { noremap = true, desc = '[Z]en [A]taraxis' })
 -- [[ Configure Treesitter ]]
 -- See `:help nvim-treesitter`
 require('nvim-treesitter.configs').setup {
@@ -311,7 +319,7 @@ require('nvim-treesitter.configs').setup {
   -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
   auto_install = true,
 
-  highlight = { enable = true },
+  highlight = { enable = true, disable = { "markdown" } },
   indent = { enable = true, disable = { 'python' } },
   incremental_selection = {
     enable = true,
@@ -430,7 +438,6 @@ local servers = {
   -- pyright = {},
   -- rust_analyzer = {},
   -- tsserver = {},
-
   lua_ls = {
     Lua = {
       workspace = { checkThirdParty = false },
@@ -508,8 +515,8 @@ cmp.setup {
   sources = {
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
+    root_dir = vim.fs.dirname(vim.fs.find({ '*.typ' }, { upward = true })[1]),
   },
 }
-
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et

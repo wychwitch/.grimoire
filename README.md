@@ -1,8 +1,9 @@
-# .grimoire
+.grimoire
 The collection of all my dotfiles
 ## Programs
-+ bat
-+ arttime
+### (arch) linux
++ *bat*
++ **arttime**
 + exa
 + zsh
  + zsnap
@@ -12,12 +13,26 @@ The collection of all my dotfiles
 + rust
 + brew
 + wezterm (on host machine)
-+ emacs (on host machine)
++ emacs (on host machine) 
 
+*wwii*
+__uh__
+**wow**
+
+#### Commands
 ```bash
 git clone --depth 1 -- https://github.com/marlonrichert/zsh-snap.git
 source zsh-snap/install.zsh
-```
+```z
+### Windows
++ win32yank
+
+#### Commands
+    
+```powershell
+scoop install win32yank
+
+ ```
 
 ## steps
 TODO: fill this out with new dotter workload
