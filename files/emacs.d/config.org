@@ -249,16 +249,16 @@ Reduce the highlight delay to instantly.
     :config (show-paren-mode +1))
 #+END_SRC
 ** Setting up some frame defaults
-Maximize the frame by default on start-up. Set the font to size 12.
+Maximize the frame by default on start-up. Set the font to size 18.
 #+BEGIN_SRC emacs-lisp
   (use-package frame
     :preface
     (defun ian/set-default-font ()
       (interactive)
-      (when (member "Consolas" (font-family-list))
-        (set-face-attribute 'default nil :family "Consolas"))
+      (when (member "VictorMono NF" (font-family-list))
+        (set-face-attribute 'default nil :family "VictorMono NF"))
       (set-face-attribute 'default nil
-                          :height 120
+                          :height 180
                           :weight 'normal))
     :ensure nil
     :config
@@ -450,11 +450,24 @@ A modern on-the-fly syntax checking extension -- absolute essential
 Some minimal org mode tweaks: org-bullets gives our headings (h1, h2,
 h3...) a more visually pleasing look.
 #+BEGIN_SRC emacs-lisp
-  (use-package org
-    :hook ((org-mode . visual-line-mode)
-           (org-mode . org-indent-mode)))
+(setq org-hide-leading-stars nil)
+(setq org-superstar-leading-bullet ?\s)
+    (use-package org
+      :hook ((org-mode . visual-line-mode)
+             (org-mode . org-indent-mode)))
 
-  (use-package org-bullets :hook (org-mode . org-bullets-mode))
+    (use-package org-superstar :hook (org-mode . org-superstar-mode))
+  (require 'org-superstar)
+  ;;(add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
+  (setq org-superstar-headline-bullets-list '("✿" "❀" "❁" "✻" "✽" "✼" "✾" "✲" "✱")
+  )
+  ;;("✿" "❀" "◉" "○" "❁" "✽" "✲" "✱" "✻" "✼" "✽" "✾")
+  ;; org ellipsis options, other than the default Go to Node...
+  ;; not supported in common font, but supported in Symbola (my fall-back font) ?, ?, ?
+  (setq org-ellipsis " 󰘕 ")
+  (setq org-superstar-item-bullet-alist'("◉" "○" "■" "◆" "▲" ))
+
+
 #+END_SRC
 *** Useful major modes
 Markdown mode and Web mode, the latter covers our usages of HTML/CSS/JS/JSX/TS/TSX/JSON.
