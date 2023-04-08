@@ -25,7 +25,7 @@
 [wezterm.variables]
 font = "FantasqueSansMono NF"
 font_size = 16.0
-zenmode_font_size = 20.0
+zenmode_font_size = 40.0
 shell = "Powershell"
 directory = "None"
 

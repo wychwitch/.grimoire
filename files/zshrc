@@ -2,4 +2,4 @@ source ~/.config/zsh/zsh-snap/znap.zsh
 eval "$(starship init zsh)"
 alias ls="exa"
 eval "$(atuin init zsh)"
-export ZEN_MODE-"on"
+export ZEN_MODE="on"
