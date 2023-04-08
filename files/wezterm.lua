@@ -21,6 +21,18 @@ local themes = {
     "wilmersdorf",
 }
 
+wezterm.on('user-var-changed', function(window, pane, name, value)
+  local overrides = window:get_config_overrides() or {}
+  if name == "ZEN_MODE" then
+     if value == "on" then
+       overrides.font_size = {{zenmode_text_size}}
+     else
+       overrides.font_size = nil
+    end
+  end
+  window:set_config_overrides(overrides) 
+end)
+
 return {
     font = wezterm.font '{{font}}',
     font_size = {{font_size}},

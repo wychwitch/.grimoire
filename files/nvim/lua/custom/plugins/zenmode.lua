@@ -70,12 +70,14 @@ return {
 
 				vim.cmd('PencilSoft');
 				vim.cmd('Limelight');
+				vim.fn.setenv("ZEN_MODE", "on")
 			end,
 			-- callback where you can add custom code when the Zen window closes
 			on_close = function()
 				require("lualine").hide({ unhide = true })
 				vim.cmd('PencilSoft');
 				vim.cmd('Limelight!');
+				vim.fn.setenv("ZEN_MODE", "off")
 			end,
 		}
 	end

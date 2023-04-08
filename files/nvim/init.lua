@@ -40,7 +40,6 @@ P.S. You can delete this when you're done too. It's your config now :)
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
-vim.g.vim_markdown_conceal = 3
 vim.wo.foldenable = false
 -- Install package manager
 --    https://github.com/folke/lazy.nvim
@@ -202,7 +201,15 @@ require("obsidian").setup({
   dir = "~/my-vault",
   completion = {
     nvim_cmp = true, -- if using nvim-cmp, otherwise set to false
-  }
+  },
+  daily_notes = {
+    folder = "Periodic Notes/Daily",
+  },
+  templates = {
+    subdir = "Templates",
+    date_format = "%Y-%m-%d-%a",
+    time_format = "%H:%M"
+  },
 })
 require 'mind'.setup()
 -- [[ Setting options ]]
@@ -227,8 +234,7 @@ vim.o.breakindent = true
 -- Save undo history
 vim.o.undofile = true
 
-vim.o.conceallevel = 3
-
+vim.o.conceallevel = 1
 
 -- Case insensitive searching UNLESS /C or capital in search
 vim.o.ignorecase = true
@@ -263,6 +269,7 @@ local zen = require('zen-mode')
 vim.keymap.set('n', '<leader>s', "nil", { desc = "+search" })
 vim.keymap.set('n', '<leader>f', "nil", { desc = "+file" })
 vim.keymap.set('n', '<leader>z', zen.toggle, { desc = "zen mode" })
+vim.keymap.set('n', '<leader>p', zen.toggle, { desc = "+projects" })
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
