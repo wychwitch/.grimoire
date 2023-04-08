@@ -70,14 +70,14 @@ return {
 
 				vim.cmd('PencilSoft');
 				vim.cmd('Limelight');
-				vim.fn.setenv("ZEN_MODE", "on")
+				os.execute('printf "\033]1337;SetUserVar=%s=%s\007" ZEN_MODE `echo -n on | base64`')
 			end,
 			-- callback where you can add custom code when the Zen window closes
 			on_close = function()
 				require("lualine").hide({ unhide = true })
 				vim.cmd('PencilSoft');
 				vim.cmd('Limelight!');
-				vim.fn.setenv("ZEN_MODE", "off")
+				os.execute('printf "\033]1337;SetUserVar=%s=%s\007" ZEN_MODE `echo -n off | base64`')
 			end,
 		}
 	end

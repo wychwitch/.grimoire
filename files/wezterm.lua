@@ -21,7 +21,7 @@ local themes = {
     "wilmersdorf",
 }
 
-wezterm.on('env-var-changed', function(window, pane, name, value)
+wezterm.on('user-var-changed', function(window, pane, name, value)
   local overrides = window:get_config_overrides() or {}
   if name == "ZEN_MODE" then
      if value == "on" then
