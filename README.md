@@ -15,23 +15,29 @@ The collection of all my dotfiles
 + wezterm (on host machine)
 + emacs (on host machine) 
 
-*wwii*
-__uh__
-**wow**
-
 #### Commands
 ```bash
 git clone --depth 1 -- https://github.com/marlonrichert/zsh-snap.git
 source zsh-snap/install.zsh
-```z
+```
+
 ### Windows
+
 + win32yank
++ qutebrowser
++ sioyek
++ devtools
++ whkd
++ komorebi
++ papeer
 
 #### Commands
     
 ```powershell
 scoop install win32yank
-
+scoop install sioyek
+scoop install whkd
+scoop install komorebi
  ```
 
 ## steps
