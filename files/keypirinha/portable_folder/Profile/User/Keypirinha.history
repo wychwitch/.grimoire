@@ -1,0 +1,39 @@
+{
+   ".header" : {
+      "creator" : "Keypirinha v2.26 (e037f62)",
+      "creator_url" : "http://keypirinha.com/",
+      "format" : 102,
+      "modified" : "2023-04-09T17:43:29-0500",
+      "type" : "history"
+   },
+   "history" : [
+      {
+         "action" : null,
+         "item" : 7579079083649247911,
+         "label" : "GitHub Desktop",
+         "time" : "2023-04-09T17:43:29-0500"
+      }
+   ],
+   "sets" : {
+      "actions" : [],
+      "items" : [
+         {
+            "args_hint" : "accepted",
+            "category" : "file",
+            "hit_hint" : "keepall",
+            "id" : 7579079083649247911,
+            "label" : "GitHub Desktop",
+            "loop_on_suggest" : false,
+            "plugin" : "Apps.StartMenu",
+            "short_desc" : "Start Menu: Programs\\GitHub, Inc",
+            "target" : "C:\\Users\\Blue\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\GitHub, Inc\\GitHub Desktop.lnk"
+         }
+      ],
+      "terms" : [
+         {
+            "items" : [ 7579079083649247911 ],
+            "search" : "gith"
+         }
+      ]
+   }
+}

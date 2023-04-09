@@ -34,3 +34,6 @@ directory = "None"
 
 [emacs.files]
 "files/emacs.d" = { target = "C:\\Users\\Blue\\.emacs.d", type = "symbolic", recurse = false }
+
+[keypirinha.files]
+"files/keypirinha/portable.ini" = "C:\\Users\\Blue\\scoop\\apps\\keypirinha\\current\\portable.ini"
