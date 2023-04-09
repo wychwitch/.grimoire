@@ -4,6 +4,11 @@
 # Inserts a blank line between shell prompts
 add_newline = false 
 
+[directory]
+truncation_symbol = '…/'
+truncation_length = 4
+truncate_to_repo = false
+home_symbol ='~~' 
 
 
 # Replace the '❯' symbol in the prompt with '➜'
