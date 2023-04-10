@@ -1,5 +1,5 @@
 source ~/.config/zsh/zsh-snap/znap.zsh
 eval "$(starship init zsh)"
-alias ls="exa"
+alias ls="exa -lha --git"
 eval "$(atuin init zsh)"
 export ZEN_MODE="on"
