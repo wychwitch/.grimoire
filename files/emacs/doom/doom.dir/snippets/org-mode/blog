@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: blog
+# key: blog
+# condition: t
+# --
+#+HUGO_BASE_DIR: C:\Git\_writings\blog\public
+#+HUGO_SECTION: posts
+#+HUGO_CODE_FENCE: t
