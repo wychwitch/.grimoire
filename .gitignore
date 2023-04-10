@@ -2,4 +2,4 @@ Brewfile.lock.json
 .dotter/local.toml
 .dotter/cache.toml
 .dotter/cache
-*.git
+*/.git
