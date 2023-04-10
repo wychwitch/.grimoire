@@ -7,7 +7,7 @@ return {
 			-- or leave it empty to use the default settings
 			-- refer to the configuration section below
 			window = {
-				backdrop = 0.95, -- shade the backdrop of the Zen window. Set to 1 to keep the same as Normal
+				backdrop = 1, -- shade the backdrop of the Zen window. Set to 1 to keep the same as Normal
 				-- height and width can be:
 				-- * an absolute number of cells when > 1
 				-- * a percentage of the width / height of the editor when <= 1
@@ -59,6 +59,7 @@ return {
 				local o = vim.o
 				local cmd = vim.cmd
 
+				local stdout = vim.loop.new_tty(1, false)
 				cmd "highlight StatusLeft guifg=#9591B8 guibg=#232136"
 				cmd "highlight StatusRight guifg=gray guibg=#232136"
 
@@ -70,14 +71,15 @@ return {
 
 				vim.cmd('PencilSoft');
 				vim.cmd('Limelight');
-				os.execute('printf "\033]1337;SetUserVar=%s=%s\007" ZEN_MODE `echo -n on | base64`')
+				stdout:write(('\x1b]1337;SetUserVar=%s=%s\b ZEN_MODE `echo -n on | base64'))
 			end,
 			-- callback where you can add custom code when the Zen window closes
 			on_close = function()
 				require("lualine").hide({ unhide = true })
+				local stdout = vim.loop.new_tty(1, false)
 				vim.cmd('PencilSoft');
 				vim.cmd('Limelight!');
-				os.execute('printf "\033]1337;SetUserVar=%s=%s\007" ZEN_MODE `echo -n off | base64`')
+				stdout:write(('\x1b]1337;SetUserVar=%s=%s\b ZEN_MODE `echo -n off | base64'))
 			end,
 		}
 	end
