@@ -34,7 +34,7 @@ directory = "None"
 
 [emacs.files]
 "files/emacs/emacs.d" = { target = "C:\\Users\\lumin\\.emacs.d", type = "symbolic", recurse = false }
-"files/emacs/emacs-profiles.el" = {target="C:\\Users\\lumin\\.emacs-profiles.el", type="template", recurse=false}
+"files/emacs/emacs-profiles.el" = "C:\\Users\\lumin\\.emacs-profiles.el"
 
 [keypirinha.files]
 "files/keypirinha/portable.ini" = "C:\\Users\\Blue\\scoop\\apps\\keypirinha\\current\\portable.ini"
