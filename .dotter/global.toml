@@ -33,7 +33,8 @@ directory = "None"
 "files/qutebrowser" = { target = "C:\\Users\\lumin\\AppData\\Roaming\\qutebrowser\\config", type = "symbolic", recurse = false }
 
 [emacs.files]
-"files/emacs.d" = { target = "C:\\Users\\Blue\\.emacs.d", type = "symbolic", recurse = false }
+"files/emacs/emacs.d" = { target = "C:\\Users\\Blue\\.emacs.d", type = "symbolic", recurse = false }
+"files/emacs/emacs-profiles.el" = "C:\\Users\\Blue\\.emacs-profiles.el" 
 
 [keypirinha.files]
 "files/keypirinha/portable.ini" = "C:\\Users\\Blue\\scoop\\apps\\keypirinha\\current\\portable.ini"
