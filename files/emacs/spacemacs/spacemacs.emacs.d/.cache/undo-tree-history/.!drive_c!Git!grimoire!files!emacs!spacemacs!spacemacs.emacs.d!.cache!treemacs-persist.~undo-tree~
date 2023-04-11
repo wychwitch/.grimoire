@@ -1,0 +1,9 @@
+(undo-tree-save-format-version . 1)
+"d09237e3fdb1d03f3f9c3bfd61c5f96829d385cf"
+[nil nil nil nil (25652 60187 997503 0) 0 nil]
+([nil nil ((1 . 62) (t . -1)) nil (25652 60187 997484 0) 0 nil])
+([nil current ((1 . 62) ("* Default
+** prose
+ - path :: c:/Git/_writings/fiction/prose
+" . -1) (t 25652 60188 0 0)) nil (25652 60311 214973 0) 0 nil])
+nil

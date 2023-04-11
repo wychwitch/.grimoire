@@ -1,0 +1,1 @@
+("c:/Git/grimoire/files/emacs/spacemacs/spacemacs.emacs.d/" "c:/Git/_writings/fiction/prose/")
