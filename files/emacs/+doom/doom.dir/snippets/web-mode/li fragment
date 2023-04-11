@@ -1,4 +1,0 @@
-# key: li-fragment
-# name: li fragment
-# --
-  <li class=fragment>$0</li>
