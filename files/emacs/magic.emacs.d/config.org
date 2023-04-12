@@ -450,22 +450,22 @@ A modern on-the-fly syntax checking extension -- absolute essential
 Some minimal org mode tweaks: org-bullets gives our headings (h1, h2,
 h3...) a more visually pleasing look.
 #+BEGIN_SRC emacs-lisp
-(setq org-hide-leading-stars nil)
-(setq org-superstar-leading-bullet ?\s)
-    (use-package org
-      :hook ((org-mode . visual-line-mode)
-             (org-mode . org-indent-mode)))
+  (setq org-hide-leading-stars nil)
+  (setq org-superstar-leading-bullet ?\s)
+      (use-package org
+        :hook ((org-mode . visual-line-mode)
+               (org-mode . org-indent-mode)))
 
-    (use-package org-superstar :hook (org-mode . org-superstar-mode))
-  (require 'org-superstar)
-  ;;(add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
-  (setq org-superstar-headline-bullets-list '("✿" "❀" "❁" "✻" "✽" "✼" "✾" "✲" "✱")
-  )
-  ;;("✿" "❀" "◉" "○" "❁" "✽" "✲" "✱" "✻" "✼" "✽" "✾")
-  ;; org ellipsis options, other than the default Go to Node...
-  ;; not supported in common font, but supported in Symbola (my fall-back font) ?, ?, ?
+      (use-package org-superstar :hook (org-mode . org-superstar-mode))
+    (require 'org-superstar)
+    ;;(add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
+    (setq org-superstar-headline-bullets-list '("✿" "❀" "❁" "✻" "✽" "✼" "✾" "✲" "✱")
+    )
+    ;;("✿" "❀" "◉" "○" "❁" "✽" "✲" "✱" "✻" "✼" "✽" "✾")
+    ;; org ellipsis options, other than the default Go to Node...
+    ;; not supported in common font, but supported in Symbola (my fall-back font) ?, ?, ?
   (setq org-ellipsis " 󰘕 ")
-  (setq org-superstar-item-bullet-alist'("◉" "○" "■" "◆" "▲" ))
+    (setq org-superstar-item-bullet-alist'("◉" "○" "■" "◆" "▲" ))
 
 
 #+END_SRC

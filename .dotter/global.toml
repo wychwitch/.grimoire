@@ -38,3 +38,7 @@ directory = "None"
 
 [keypirinha.files]
 "files/keypirinha/portable.ini" = "C:\\Users\\Blue\\scoop\\apps\\keypirinha\\current\\portable.ini"
+
+[sioyek.files]
+"files/sioyek/keys_user.config" = "C:\\Users\\lumin\\scoop\\apps\\sioyek\\current"
+"files/sioyek/prefs_user.config" = "C:\\Users\\lumin\\scoop\\apps\\sioyek\\current"
