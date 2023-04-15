@@ -568,13 +568,95 @@ This function is called at the very end of Spacemacs startup, after layer
 configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
+  (setq org-hide-leading-stars nil)
+  (setq org-superstar-leading-bullet ?\s)
+  (use-package org
+    :hook ((org-mode . visual-line-mode)
+           (org-mode . org-indent-mode)))
+  (use-package org-superstar :hook (org-mode . org-superstar-mode))
   (require 'org-superstar)
   (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
   (setq org-superstar-headline-bullets-list '("✿" "❀" "❁" "✻" "✽" "✼" "✾" "✲" "✱"))
   (setq org-ellipsis " 󰘕 ")
   (setq org-superstar-item-bullet-alist'("◉" "○" "■" "◆" "▲" ))
+
+  (defface w-text '((t ( :foreground "#D1A0EA" :inherit text ) )) "Witch's Text" :group 'org-mode)
+  (defvar w-text 'w-text)
+
+  (defface c-text '((t (:foreground "#ec51cd" :inherit text ) )) "Celeste's Text" :group 'org-mode )
+  (defvar c-text 'c-text)
+
+  (defface m-text '((t (:foreground "#5459b6" :inherit text ) )) "Magician's Text" :group 'org-mode )
+  (defvar m-text 'm-text)
+
+  (defface n-text '((t (:foreground "#6a6273" :inherit text ) )) "Nyx's Text" :group 'org-mode )
+  (defvar n-text 'n-text)
+
+  (defface g-text '((t (:foreground "#76e37a" :inherit text ) )) "Gidget's Text" :group 'org-mode )
+  (defvar g-text 'g-text)
+
+
+  (defface g-text '((t (:foreground "#6a6273" :inherit text :weight extra-bold) )) "Gidgit's Text" :group 'org-mode )
+  (defvar g-text 'g-text)
+  ;;; Add keywords
+  (defun add-alter-keywords()
+    "adds custom keywords for highlighting text in org-mode."
+    (font-lock-add-keywords nil
+          '(("^w: .*$" . 'w-text))
+          )
+     (font-lock-add-keywords nil
+          '(("^m: .*$" . 'm-text))
+          )
+     (font-lock-add-keywords nil
+          '(("^c: .*$" . 'c-text))
+          )
+     (font-lock-add-keywords nil
+          '(("^n: .*$" . 'n-text))
+          )
+(font-lock-add-keywords nil
+          '(("^g: .*$" . 'g-text))
+          )
+     )
+  (add-hook 'org-mode-hook 'add-alter-keywords)
+
+
+(defun display-persona-names()
+(use-package ov
+  :ensure t)
+ (ov-set (ov-regexp "^m:") 'display "<magician>")
+ (ov-set (ov-regexp "^w:") 'display "<witch>")
+ (ov-set (ov-regexp "^c:") 'display "<celeste>")
+ (ov-set (ov-regexp "^n:") 'display "<nyx>")
+ (ov-set (ov-regexp "^g:") 'display "<gidget>")
+
+  )
+(add-hook 'org-mode-hook 'display-persona-names)
+(add-hook 'after-save-hook 'display-persona-names)
+
+
 )
 
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
+(defun dotspacemacs/emacs-custom-settings ()
+  "Emacs custom settings.
+This is an auto-generated function, do not modify its content directly, use
+Emacs customize menu instead.
+This function is called at the very end of Spacemacs initialization."
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" default))
+ '(package-selected-packages
+   '(ov yasnippet-snippets which-key use-package unfill treemacs-projectile treemacs-magit treemacs-icons-dired treemacs-evil toc-org space-doc smeargle quickrun pcre2el overseer orgit org-superstar org-rich-yank org-present org-pomodoro org-mime org-download org-contrib org-cliplink nameless mwim mmm-mode markdown-toc macrostep inspector hybrid-mode htmlize holy-mode help-fns+ helm-xref helm-themes helm-swoop helm-projectile helm-org-rifle helm-org helm-mode-manager helm-make helm-ls-git helm-git-grep helm-descbinds helm-company helm-c-yasnippet helm-ag gnuplot gitignore-templates git-timemachine git-modes git-messenger git-link gh-md fuzzy flyspell-correct-helm flycheck-pos-tip flycheck-package flycheck-elsa evil-org evil-mc evil-evilified-state emr elisp-slime-nav elisp-def dotenv-mode diminish bind-map auto-yasnippet auto-dictionary auto-compile ace-jump-helm-line ac-ispell)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+)
