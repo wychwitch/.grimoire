@@ -537,4 +537,4 @@ cmp.setup {
 }
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
-vim.cmd 'autocmd BufNewFile,BufRead *.typ set filetype=typst'
+--vim.cmd 'autocmd BufNewFile,BufRead *.typ set filetype=typst'
