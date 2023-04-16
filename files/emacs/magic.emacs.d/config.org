@@ -255,10 +255,10 @@ Maximize the frame by default on start-up. Set the font to size 18.
     :preface
     (defun ian/set-default-font ()
       (interactive)
-      (when (member "VictorMono NF" (font-family-list))
-        (set-face-attribute 'default nil :family "VictorMono NF"))
+      (when (member "FantasqueSansMono Nerd Font" (font-family-list))
+        (set-face-attribute 'default nil :family "FantasqueSansMono Nerd Font"))
       (set-face-attribute 'default nil
-                          :height 180
+                          :height 200
                           :weight 'normal))
     :ensure nil
     :config
@@ -464,7 +464,7 @@ h3...) a more visually pleasing look.
     ;;("✿" "❀" "◉" "○" "❁" "✽" "✲" "✱" "✻" "✼" "✽" "✾")
     ;; org ellipsis options, other than the default Go to Node...
     ;; not supported in common font, but supported in Symbola (my fall-back font) ?, ?, ?
-  (setq org-ellipsis " 󰘕 ")
+  (setq org-ellipsis " 󰁊 ")
     (setq org-superstar-item-bullet-alist'("◉" "○" "■" "◆" "▲" ))
 
 

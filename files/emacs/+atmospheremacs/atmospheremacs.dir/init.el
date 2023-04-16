@@ -621,8 +621,6 @@ before packages are loaded."
 
 
 (defun display-persona-names()
-(use-package ov
-  :ensure t)
  (ov-set (ov-regexp "^m:") 'display "<magician>")
  (ov-set (ov-regexp "^w:") 'display "<witch>")
  (ov-set (ov-regexp "^c:") 'display "<celeste>")
