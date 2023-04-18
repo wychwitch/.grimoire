@@ -4,11 +4,24 @@
 # Inserts a blank line between shell prompts
 add_newline = false 
 
+[directory]
+truncation_symbol = '/ /'
+truncation_length = 4
+truncate_to_repo = false
+home_symbol =' ' 
 
+[shell]
+disabled = false
+nu_indicator = "nu"
+zsh_indicator = ""
+
+[custom.windowscheck]
+when = 'test "${PWD##/mnt/c/}" != "${PWD}"'
+symbol = "  "
 
 # Replace the '❯' symbol in the prompt with '➜'
 [character] # The name of the module we are configuring is 'character'
-success_symbol = '[~>](bold #9b7fd6)' # The 'success_symbol' segment is being set to '➜' with the color 'bold green'
+success_symbol = ' [✦](bold #9b7fd6) ' # The 'success_symbol' segment is being set to '➜' with the color 'bold green'
 [rust]
 format = 'via [🦀 $version](red bold)'
 # Disable the package module, hiding it from the prompt completely

@@ -33,7 +33,12 @@ directory = "None"
 "files/qutebrowser" = { target = "C:\\Users\\lumin\\AppData\\Roaming\\qutebrowser\\config", type = "symbolic", recurse = false }
 
 [emacs.files]
-"files/emacs.d" = { target = "C:\\Users\\Blue\\.emacs.d", type = "symbolic", recurse = false }
+"files/emacs/emacs.d" = { target = "C:\\Users\\lumin\\.emacs.d", type = "symbolic", recurse = false }
+"files/emacs/emacs-profiles.el" = "C:\\Users\\lumin\\.emacs-profiles.el"
 
 [keypirinha.files]
 "files/keypirinha/portable.ini" = "C:\\Users\\Blue\\scoop\\apps\\keypirinha\\current\\portable.ini"
+
+[sioyek.files]
+"files/sioyek/keys_user.config" = "C:\\Users\\lumin\\scoop\\apps\\sioyek\\current\\keys_user.config"
+"files/sioyek/prefs_user.config" = "C:\\Users\\lumin\\scoop\\apps\\sioyek\\current\\prefs_user.config"
