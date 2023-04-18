@@ -2,3 +2,6 @@ Brewfile.lock.json
 .dotter/local.toml
 .dotter/cache.toml
 .dotter/cache
+files/keypirinha/portable_folder/Local/Keypirinha.the-grand-libra.log
+files/keypirinha/portable_folder/Local/Keypirinha.the-grand-libra.catalog
+files/keypirinha/portable_folder/Profile/User/Keypirinha.history
