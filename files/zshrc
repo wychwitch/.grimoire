@@ -1,5 +1,6 @@
 source ~/.config/zsh/zsh-snap/znap.zsh
 eval "$(starship init zsh)"
 alias ls="exa -lha --git"
+alias soft="ssh phonemicrowave.typheus.net -p 23231"
 eval "$(atuin init zsh)"
 export ZEN_MODE="on"
