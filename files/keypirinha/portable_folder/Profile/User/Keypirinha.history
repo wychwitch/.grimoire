@@ -3,7 +3,7 @@
       "creator" : "Keypirinha v2.26 (e037f62)",
       "creator_url" : "http://keypirinha.com/",
       "format" : 102,
-      "modified" : "2023-04-09T17:43:29-0500",
+      "modified" : "2023-04-18T00:29:55-0500",
       "type" : "history"
    },
    "history" : [
@@ -12,11 +12,57 @@
          "item" : 7579079083649247911,
          "label" : "GitHub Desktop",
          "time" : "2023-04-09T17:43:29-0500"
+      },
+      {
+         "action" : null,
+         "item" : 8747926651235838644,
+         "label" : "Wezterm",
+         "time" : "2023-04-14T04:27:15-0500"
+      },
+      {
+         "action" : null,
+         "item" : 558627147860966354,
+         "label" : "Discord",
+         "time" : "2023-04-16T19:13:23-0500"
+      },
+      {
+         "action" : null,
+         "item" : 8747926651235838644,
+         "label" : "Wezterm",
+         "time" : "2023-04-16T20:18:59-0500"
+      },
+      {
+         "action" : null,
+         "item" : 14830812638933227232,
+         "label" : "Emacs",
+         "time" : "2023-04-18T00:29:55-0500"
       }
    ],
    "sets" : {
       "actions" : [],
       "items" : [
+         {
+            "args_hint" : "accepted",
+            "category" : "file",
+            "hit_hint" : "keepall",
+            "id" : 558627147860966354,
+            "label" : "Discord",
+            "loop_on_suggest" : false,
+            "plugin" : "Apps.StartMenu",
+            "short_desc" : "Start Menu: Programs",
+            "target" : "C:\\Users\\Blue\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Discord.lnk"
+         },
+         {
+            "args_hint" : "accepted",
+            "category" : "file",
+            "hit_hint" : "keepall",
+            "id" : 14830812638933227232,
+            "label" : "Emacs",
+            "loop_on_suggest" : false,
+            "plugin" : "Apps.StartMenu",
+            "short_desc" : "Start Menu: Programs\\Emacs-28.1",
+            "target" : "C:\\Users\\Blue\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Emacs-28.1\\Emacs.lnk"
+         },
          {
             "args_hint" : "accepted",
             "category" : "file",
@@ -27,12 +73,39 @@
             "plugin" : "Apps.StartMenu",
             "short_desc" : "Start Menu: Programs\\GitHub, Inc",
             "target" : "C:\\Users\\Blue\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\GitHub, Inc\\GitHub Desktop.lnk"
+         },
+         {
+            "args_hint" : "accepted",
+            "category" : "file",
+            "hit_hint" : "keepall",
+            "id" : 8747926651235838644,
+            "label" : "Wezterm",
+            "loop_on_suggest" : false,
+            "plugin" : "Apps.StartMenu",
+            "short_desc" : "Start Menu: Programs\\Scoop Apps",
+            "target" : "C:\\Users\\Blue\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Scoop Apps\\Wezterm.lnk"
          }
       ],
       "terms" : [
          {
+            "items" : [ 558627147860966354 ],
+            "search" : "dis"
+         },
+         {
+            "items" : [ 14830812638933227232 ],
+            "search" : "e"
+         },
+         {
             "items" : [ 7579079083649247911 ],
             "search" : "gith"
+         },
+         {
+            "items" : [ 8747926651235838644 ],
+            "search" : "w"
+         },
+         {
+            "items" : [ 8747926651235838644 ],
+            "search" : "wez"
          }
       ]
    }
