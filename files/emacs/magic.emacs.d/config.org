@@ -87,7 +87,9 @@ possible to keep the configuration consistent. The option
                       evil-option-map
                       search
                       projectile-key-map
-                      evil-tab-map))
+                      evil-tab-map
+                      org-map
+                                 ))
               (use-package evil
                 :defer nil
                 :bind
@@ -104,12 +106,13 @@ possible to keep the configuration consistent. The option
                   ("g" . git)
                   ("i" . evil-insert-map)
                   ("j" . evil-jump-map)
-                  ("o" . evil-option-map)
+                  ("x" . evil-option-map)
                   ("s" . search)
                   ("u" . universal-argument)
                   ("w" . evil-window-map)
                   ("p" . projectile-key-map)
                   ("z" . writeroom-mode)
+                  ("o" . org-map)
                   :map evil-window-map
                   ("o" . miciah/window-toggle-other-windows)
                   :map evil-buffer-map
@@ -150,6 +153,8 @@ possible to keep the configuration consistent. The option
                   :map projectile-key-map
                   ("p" . 'projectile-switch-project)
                   ("c" . 'projectile-commander)
+                  :map org-map
+                  ("t" . org-timestamp)
                   )
                 ;;:custom
                 ;; ...
@@ -642,5 +647,9 @@ Provides us with hints on available keystroke combinations.
 #+END_SRC
 *** Writeroom
 #+BEGIN_SRC emacs-lisp
-(use-package writeroom-mode)
+  (use-package writeroom-mode
+ :init
+  (setq writeroom-width 0.5)
+  )
+
 #+END_SRC
