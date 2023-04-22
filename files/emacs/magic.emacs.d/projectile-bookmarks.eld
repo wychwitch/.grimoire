@@ -1,0 +1,1 @@
+("c:/Git/grimoire/" "c:/Git/_writings/fiction/prose/" "c:/Git/_writings/essays/" "c:/Git/_writings/blog/" "c:/Git/_writings/JCCC-FALL-22/" "c:/Git/_writings/fiction/kingdom-hearts-memories-of-fools/" "c:/Git/_writings/fiction/burning-witch-electric-heart/")
