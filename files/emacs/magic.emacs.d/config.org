@@ -288,7 +288,7 @@ Maximize the frame by default on start-up. Set the font to size 18.
     (defun ian/set-default-font ()
       (interactive)
       (when (member "FantasqueSansMono Nerd Font" (font-family-list))
-        (set-face-attribute 'default nil :family "FantasqueSansMono Nerd Font"))
+        (set-face-attribute 'default nil :family "FantasqueSansMono NF"))
       (set-face-attribute 'default nil
                           :height 200
                           :weight 'normal))
@@ -368,7 +368,11 @@ Normally, we need to add ~:ensure t~ to tell ~use-package~ to download packages 
           dashboard-banner-logo-title "Magic~⭐"
           dashboard-image-banner-max-width 450
           dashboard-image-banner-max-height 450
-          dashboard-items nil
+          dashboard-items '((recents  . 5)
+                        (bookmarks . 5)
+                        (projects . 5)
+                        (agenda . 5)
+                        (registers . 5))
           dashboard-set-footer nil))
 #+END_SRC
 *** Syntax highlighting
@@ -659,4 +663,8 @@ Provides us with hints on available keystroke combinations.
 #+BEGIN_SRC emacs-lisp
 (use-package all-the-icons
   :if (display-graphic-p))
+#+END_SRC
+*** pagebreak lines
+#+BEGIN_SRC emacs-lisp
+  (use-package page-break-lines)
 #+END_SRC

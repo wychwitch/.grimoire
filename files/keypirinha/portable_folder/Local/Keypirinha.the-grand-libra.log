@@ -455,3 +455,65 @@
 2023-04-21 21:35:07.748 [W] Bookmarks.Bookmarks: places.sqlite file not found in C:\Users\Blue\AppData\Roaming\Mozilla\Firefox\Profiles/4j12kzcl.default
 2023-04-21 21:35:17.023 [i] Apps.EnvPath: Cataloged 3834 items in 40.7 seconds
 2023-04-21 21:35:47.290 [i] Bookmarks.Bookmarks: Referenced 7265 bookmarks
+2023-04-21 22:09:52.437 [i] Apps.StartMenu: Cataloged 1028 items in 0.1 seconds
+2023-04-21 22:09:54.444 [i] Apps.StartMenu: Cataloged 1028 items in 0.1 seconds
+2023-04-21 22:10:44.002 [i] Apps.StartMenu: Cataloged 1030 items in 0.1 seconds
+2023-04-21 22:10:46.016 [i] Apps.StartMenu: Cataloged 1030 items in 0.1 seconds
+2023-04-21 22:32:25.398 [i] Environment changed.
+2023-04-21 22:32:25.522 [i] Apps.EnvPath: PATH changed, rebuilding catalog...
+2023-04-21 22:32:26.032 [i] Apps.EnvPath: Cataloged 3767 items in 0.5 seconds
+2023-04-21 22:32:32.837 [i] Environment changed.
+2023-04-21 22:32:44.343 [i] Environment changed.
+2023-04-21 22:36:34.781 [i] Environment changed.
+2023-04-21 22:36:34.820 [i] Apps.EnvPath: PATH changed, rebuilding catalog...
+2023-04-21 22:36:35.175 [i] Apps.EnvPath: Cataloged 3817 items in 0.4 seconds
+2023-04-21 22:56:41.651 [i] Environment changed.
+2023-04-21 22:56:41.680 [i] Apps.EnvPath: PATH changed, rebuilding catalog...
+2023-04-21 22:56:41.982 [i] Apps.EnvPath: Cataloged 3803 items in 0.3 seconds
+2023-04-21 23:07:13.446 [i] Received end-of-session message
+
+
+2023-04-22 10:16:07.724 [i] Loaded 43 items from history file.
+2023-04-22 10:16:08.049 [i] Loaded 9634 items from catalog file.
+2023-04-22 10:16:08.302 [i] Init done in 3.4146s, including 2.3597s (69%) for the Python interpreter.
+2023-04-22 10:16:08.304 [i] Plugin loaded: Internal.About
+2023-04-22 10:16:08.671 [i] Plugin loaded: Apps.CustomCmds (instance #1)
+2023-04-22 10:16:08.671 [i] Plugin loaded: Apps.Desktop (instance #1)
+2023-04-22 10:16:08.671 [i] Plugin loaded: Apps.EnvPath (instance #1)
+2023-04-22 10:16:08.671 [i] Plugin loaded: Apps.ExtraPaths (instance #1)
+2023-04-22 10:16:08.671 [i] Plugin loaded: Apps.StartMenu (instance #1)
+2023-04-22 10:16:08.810 [i] Plugin loaded: Bookmarks.Bookmarks (instance #1)
+2023-04-22 10:16:08.828 [i] Plugin loaded: Calc.Calc (instance #1)
+2023-04-22 10:16:08.831 [i] Plugin loaded: ControlPanel.ControlPanel (instance #1)
+2023-04-22 10:16:08.833 [i] Plugin loaded: Env.Env (instance #1)
+2023-04-22 10:16:08.877 [i] Plugin loaded: Everything.Everything (instance #1)
+2023-04-22 10:16:08.892 [i] Plugin loaded: FileBrowser.FileBrowser (instance #1)
+2023-04-22 10:16:08.967 [i] Plugin loaded: FilesCatalog.FilesCatalog (instance #1)
+2023-04-22 10:16:09.098 [i] Plugin loaded: FileZilla.FileZilla (instance #1)
+2023-04-22 10:16:09.107 [i] Plugin loaded: GoogleTranslate.GoogleTranslate (instance #1)
+2023-04-22 10:16:09.112 [i] Plugin loaded: PuTTY.PuTTY (instance #1)
+2023-04-22 10:16:09.116 [i] Plugin loaded: RegBrowser.RegBrowser (instance #1)
+2023-04-22 10:16:09.124 [i] Plugin loaded: String.String (instance #1)
+2023-04-22 10:16:09.128 [i] Plugin loaded: TaskSwitcher.TaskSwitcher (instance #1)
+2023-04-22 10:16:09.132 [i] Plugin loaded: URL.URL (instance #1)
+2023-04-22 10:16:09.137 [i] Plugin loaded: WebSearch.WebSearch (instance #1)
+2023-04-22 10:16:09.144 [i] Plugin loaded: WebSuggest.WebSuggest (instance #1)
+2023-04-22 10:16:09.149 [i] Plugin loaded: Winamp.Winamp (instance #1)
+2023-04-22 10:16:09.152 [i] Plugin loaded: WinSCP.WinSCP (instance #1)
+2023-04-22 10:16:10.281 [i] Apps.Desktop: Cataloged 233 items in 0.8 seconds
+2023-04-22 10:16:11.392 [i] Apps.StartMenu: Cataloged 1030 items in 1.2 seconds
+2023-04-22 10:16:19.873 [W] Bookmarks.Bookmarks: places.sqlite file not found in C:\Users\Blue\AppData\Roaming\Mozilla\Firefox\Profiles/4j12kzcl.default
+2023-04-22 10:16:35.242 [i] Apps.EnvPath: Cataloged 3825 items in 25.0 seconds
+2023-04-22 10:16:48.277 [i] Bookmarks.Bookmarks: Referenced 7265 bookmarks
+2023-04-22 14:02:37.274 [i] Environment changed.
+2023-04-22 14:02:37.522 [i] Apps.EnvPath: PATH changed, rebuilding catalog...
+2023-04-22 14:02:38.035 [i] Apps.EnvPath: Cataloged 3801 items in 0.5 seconds
+2023-04-22 14:02:49.468 [i] Environment changed.
+2023-04-22 14:02:49.503 [i] Apps.EnvPath: PATH changed, rebuilding catalog...
+2023-04-22 14:02:49.788 [i] Apps.EnvPath: Cataloged 3803 items in 0.3 seconds
+2023-04-22 14:02:51.453 [i] Apps.StartMenu: Cataloged 1030 items in 0.1 seconds
+2023-04-22 21:02:35.706 [i] Apps.StartMenu: Cataloged 1030 items in 0.3 seconds
+2023-04-22 22:16:26.895 [i] Apps.Desktop: Cataloged 234 items in 0.1 seconds
+2023-04-22 22:16:27.076 [i] Apps.StartMenu: Cataloged 1032 items in 0.1 seconds
+2023-04-22 22:16:29.076 [i] Apps.StartMenu: Cataloged 1032 items in 0.1 seconds
+2023-04-22 22:16:43.900 [i] Apps.StartMenu: Cataloged 1032 items in 0.1 seconds
