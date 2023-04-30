@@ -21,7 +21,7 @@ git clone --depth 1 -- https://github.com/marlonrichert/zsh-snap.git
 source zsh-snap/install.zsh
 
 cargo install sccache du-dust bat zellij mprocs ripgrep bob-nvim gitui irust bacon porsmo speedtest-rs
-RUSTC_WRAPPER=sccache cargo install {package}
+RUSTC_WRAPPER=~/.cargo/sccache
 ```
 
 ### Windows
