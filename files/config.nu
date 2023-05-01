@@ -535,3 +535,4 @@ let-env config = {
   ]
 }
 source ~/.cache/starship/init.nu
+use ~/soft-alias.nu *
