@@ -1,9 +1,9 @@
 #+Title: Yay-Evil distro by Ian Y.E. Pan
 #+Author: Ian Y.E. Pan
 #+Date: 2019
-Welcome! This Emacs "distro" is based on my personal Emacs
-configuration (on GNU Emacs 26.3). It's unopinionated and was created
-for general use in mind. The *package* settings are grouped in a logical
+
+
+
 manner, and I've documented as detailed as possible what each code
 snippet does in this file.
 * Settings without corresponding packages
@@ -118,7 +118,7 @@ possible to keep the configuration consistent. The option
                   :map evil-buffer-map
                   ("b" . list-buffers)
                   ("B" . bury-buffer)
-                  ("d" . kill-this-buffer)
+                  ("d" . evil-window-delete)
                   ("e" . eval-buffer)
                   ("h" . miciah/switch-to-help-buffer)
                   ("m" . view-echo-area-messages)
@@ -361,15 +361,20 @@ Normally, we need to add ~:ensure t~ to tell ~use-package~ to download packages 
 #+END_SRC
 *** Dashboard welcome page
 #+BEGIN_SRC emacs-lisp
-  (use-package dashboard
-    :config
-    (dashboard-setup-startup-hook)
-    (setq dashboard-startup-banner "C:/Git/grimoire/files/emacs/magic.emacs.d/logos/logo.svg"
-          dashboard-banner-logo-title "Magic~⭐"
-          dashboard-image-banner-max-width 450
-          dashboard-image-banner-max-height 450
-          dashboard-items nil
-          dashboard-set-footer nil))
+    (use-package dashboard
+      :config
+      (dashboard-setup-startup-hook)
+      (setq dashboard-startup-banner "C:/Git/grimoire/files/emacs/magic.emacs.d/logos/logo.svg"
+            dashboard-banner-logo-title "Magic~⭐"
+            dashboard-image-banner-max-width 450
+            dashboard-image-banner-max-height 450
+            dashboard-items nil
+            dashboard-set-footer nil))
+(setq dashboard-center-content t)
+  (setq dashboard-items '((bookmarks . 3)
+                          (projects . 5)
+                          (agenda . 5)
+                          (registers . 5)))
 #+END_SRC
 *** Syntax highlighting
 Lightweight syntax highlighting improvement for numbers and escape
@@ -510,7 +515,7 @@ h3...) a more visually pleasing look.
                         (col-strip "2278bf-e15554-3bb273-507c6d-6e5775-598d91-7768ae") ; blue red green okay
                         (col-strip "c7b7ee-2a2b2e-a29190-de8c7d-dcedb9") ; custom
                         ))
-   (setq pick-color 2)
+   (setq pick-color 1)
     (setq color-theme (nth pick-color color-schemes))
 
 
@@ -657,6 +662,45 @@ Provides us with hints on available keystroke combinations.
 #+END_SRC
 *** All The Icons
 #+BEGIN_SRC emacs-lisp
-(use-package all-the-icons
-  :if (display-graphic-p))
+  (use-package all-the-icons
+    :if (display-graphic-p))
+(require 'ox-md)
+#+END_SRC
+*** typst-mode
+#+BEGIN_SRC emacs-lisp
+(use-package poly-markdown)
+  (use-package typst-mode)
+#+END_SRC
+*** quelpa
+#+BEGIN_SRC emacs-lisp
+(use-package quelpa)
+#+END_SRC
+*** Bookmarks+
+#+BEGIN_SRC emacs-lisp
+    (quelpa '(bookmark+ :fetcher wiki
+                        :files
+                        ("bookmark+.el"
+                         "bookmark+-mac.el"
+                         "bookmark+-bmu.el"
+                         "bookmark+-1.el"
+                         "bookmark+-key.el"
+                         "bookmark+-lit.el"
+                         "bookmark+-doc.el"
+                         "bookmark+-chg.el")))
+#+END_SRC
+*** org journal
+#+BEGIN_SRC emacs-lisp
+    (use-package org-journal
+    :config
+    ;;(require ivy)
+      (setq org-journal-dir "~/org/journal/"
+    org-journal-file-format "%Y-%m/%Ww.org"
+    org-journal-file-header "#+TITLE Weekly Journal %Y %b %Ww"
+    org-journal-file-type 'weekly
+  org-journal-date-prefix "* "
+  org-journal-time-format "@ %k:%M\n "
+    org-journal-find-file 'counsel-find-file
+    org-journal-date-format "%A, %b %d")
+
+    )
 #+END_SRC
