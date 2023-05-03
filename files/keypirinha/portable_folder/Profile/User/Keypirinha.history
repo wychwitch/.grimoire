@@ -3,7 +3,7 @@
       "creator" : "Keypirinha v2.26 (e037f62)",
       "creator_url" : "http://keypirinha.com/",
       "format" : 102,
-      "modified" : "2023-04-22T02:37:41-0500",
+      "modified" : "2023-04-22T16:55:50-0500",
       "type" : "history"
    },
    "history" : [
@@ -210,6 +210,84 @@
          "item" : 8112805046988546079,
          "label" : "Emacs",
          "time" : "2023-04-22T02:37:41-0500"
+      },
+      {
+         "action" : null,
+         "item" : 8112805046988546079,
+         "label" : "Emacs",
+         "time" : "2023-04-22T02:50:03-0500"
+      },
+      {
+         "action" : null,
+         "item" : 8112805046988546079,
+         "label" : "Emacs",
+         "time" : "2023-04-22T02:55:31-0500"
+      },
+      {
+         "action" : null,
+         "item" : 8112805046988546079,
+         "label" : "Emacs",
+         "time" : "2023-04-22T03:10:53-0500"
+      },
+      {
+         "action" : null,
+         "item" : 8112805046988546079,
+         "label" : "Emacs",
+         "time" : "2023-04-22T03:22:18-0500"
+      },
+      {
+         "action" : null,
+         "item" : 8112805046988546079,
+         "label" : "Emacs",
+         "time" : "2023-04-22T03:37:20-0500"
+      },
+      {
+         "action" : null,
+         "item" : 8112805046988546079,
+         "label" : "Emacs",
+         "time" : "2023-04-22T03:38:29-0500"
+      },
+      {
+         "action" : null,
+         "item" : 8112805046988546079,
+         "label" : "Emacs",
+         "time" : "2023-04-22T03:56:49-0500"
+      },
+      {
+         "action" : null,
+         "item" : 8112805046988546079,
+         "label" : "Emacs",
+         "time" : "2023-04-22T04:00:42-0500"
+      },
+      {
+         "action" : null,
+         "item" : 8112805046988546079,
+         "label" : "Emacs",
+         "time" : "2023-04-22T04:02:42-0500"
+      },
+      {
+         "action" : null,
+         "item" : 8112805046988546079,
+         "label" : "Emacs",
+         "time" : "2023-04-22T16:48:32-0500"
+      },
+      {
+         "action" : null,
+         "item" : 8112805046988546079,
+         "label" : "Emacs",
+         "time" : "2023-04-22T16:52:30-0500"
+      },
+      {
+         "action" : null,
+         "item" : 8112805046988546079,
+         "label" : "Emacs",
+         "time" : "2023-04-22T16:55:40-0500"
+      },
+      {
+         "action" : null,
+         "item" : 17080347163708515527,
+         "label" : "Thunderbird",
+         "time" : "2023-04-22T16:55:50-0500"
       }
    ],
    "sets" : {
