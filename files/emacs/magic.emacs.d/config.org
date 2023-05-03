@@ -280,14 +280,14 @@ Reduce the highlight delay to instantly.
     :init (setq show-paren-delay 0)
     :config (show-paren-mode +1))
 #+END_SRC
-** Setting up some frame defaults
+** Setting up some *frame* defaults
 Maximize the frame by default on start-up. Set the font to size 18.
 #+BEGIN_SRC emacs-lisp
   (use-package frame
     :preface
     (defun ian/set-default-font ()
       (interactive)
-      (when (member "FantasqueSansMono Nerd Font" (font-family-list))
+      (when (member "FantasqueSansMono NF" (font-family-list))
         (set-face-attribute 'default nil :family "FantasqueSansMono NF"))
       (set-face-attribute 'default nil
                           :height 200
@@ -361,21 +361,21 @@ Normally, we need to add ~:ensure t~ to tell ~use-package~ to download packages 
 #+END_SRC
 *** Dashboard welcome page
 #+BEGIN_SRC emacs-lisp
-    (use-package dashboard
-      :config
-      (dashboard-setup-startup-hook)
-      (setq dashboard-startup-banner "C:/Git/grimoire/files/emacs/magic.emacs.d/logos/logo.svg"
-            dashboard-banner-logo-title "Magic~⭐"
-            dashboard-image-banner-max-width 450
-            dashboard-image-banner-max-height 450
-            dashboard-items nil
-            dashboard-set-footer nil))
-(setq dashboard-center-content t)
-  (setq dashboard-items '((bookmarks . 3)
-                          (projects . 5)
-                          (agenda . 5)
-                          (registers . 5))
-                            dashboard-set-footer nil)
+      (use-package dashboard
+        :config
+        (dashboard-setup-startup-hook)
+        (setq dashboard-startup-banner "C:/Git/grimoire/files/emacs/magic.emacs.d/logos/logo.svg"
+              dashboard-banner-logo-title "Magic~⭐"
+              dashboard-image-banner-max-width 450
+              dashboard-image-banner-max-height 450
+initial-buffer-choice (lambda () (get-buffer-create "*dashboard*"))
+              dashboard-set-footer nil))
+  (setq dashboard-center-content t)
+    (setq dashboard-items '((bookmarks . 3)
+                            (projects . 5)
+                            (agenda . 5)
+                            (registers . 5))
+                             )
 #+END_SRC
 *** Syntax highlighting
 Lightweight syntax highlighting improvement for numbers and escape
@@ -485,58 +485,78 @@ A modern on-the-fly syntax checking extension -- absolute essential
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck :config (global-flycheck-mode +1))
 #+END_SRC
+*** Org Modern
+#+BEGIN_SRC emacs-lisp
+  (use-package org-modern
+    :config
+     (with-eval-after-load 'org (global-org-modern-mode))
+     (setq
+       org-pretty-entities t
+       org-insert-heading-respect-content t
+  org-modern-star '("✿" "❀" "❁" "✻" "✽" "✼" "✾" "✲" "✱")
+      )
+     (menu-bar-mode -1)
+     (tool-bar-mode -1)
+     (scroll-bar-mode -1)
+   )
+(use-package nerd-icons
+  :custom
+  ;; The Nerd Font you want to use in GUI
+  ;; "Symbols Nerd Font Mono" is the default and is recommended
+  ;; but you can use any other Nerd Font if you want
+   (nerd-icons-font-family "Symbols Nerd Font Mono")
+  )
+  (with-eval-after-load 'evil-maps
+  (define-key evil-motion-state-map (kbd "RET") nil))
+#+END_SRC
 *** Org Mode
 Some minimal org mode tweaks: org-bullets gives our headings (h1, h2,
 h3...) a more visually pleasing look.
 #+BEGIN_SRC emacs-lisp
- (setq org-return-follows-link  t)
-   (setq org-hide-leading-stars nil)
-   (setq org-superstar-leading-bullet ?\s)
-       (use-package org
-         :hook ((org-mode . visual-line-mode)
-                (org-mode . org-indent-mode)))
+  (setq org-return-follows-link  t)
+    (setq org-hide-leading-stars nil)
+        (use-package org
+          :hook ((org-mode . visual-line-mode)
+                 (org-mode . org-indent-mode)))
 
-       (use-package org-superstar :hook (org-mode . org-superstar-mode))
-     (require 'org-superstar)
-     (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
-     (setq org-superstar-headline-bullets-list '("✿" "❀" "❁" "✻" "✽" "✼" "✾" "✲" "✱")
-     )
-     ;;("✿" "❀" "◉" "○" "❁" "✽" "✲" "✱" "✻" "✼" "✽" "✾")
-     ;; org ellipsis options, other than the default Go to Node...
-     ;; not supported in common font, but supported in Symbola (my fall-back font) ?, ?, ?
-   (setq org-ellipsis " 󰁊 ")
-     (setq org-superstar-item-bullet-alist'("◉" "○" "■" "◆" "▲" ))
-  (defun col-strip (col-str)
-     (butlast (split-string (mapconcat (lambda (x) (concat "#" x " "))
-                                       (split-string col-str "-")
-                                       "") " ")))
-
-   (setq color-schemes (list
-                        (col-strip "a21d1d-5497de-8e35b7-ffff5b-56cb7d-df5252-707efa") ; red blue purple study
-                        (col-strip "2278bf-e15554-3bb273-507c6d-6e5775-598d91-7768ae") ; blue red green okay
-                        (col-strip "c7b7ee-2a2b2e-a29190-de8c7d-dcedb9") ; custom
-                        ))
-   (setq pick-color 1)
-    (setq color-theme (nth pick-color color-schemes))
-
-
-     (set-face-attribute 'org-level-1 nil
-                         :height 1.3
-                         :foreground (nth 0 color-theme)
-                         :weight 'bold)
-     (set-face-attribute 'org-level-2 nil
-                         :height 1.2
-                         :foreground (nth 1 color-theme))
-     (set-face-attribute 'org-level-3 nil
-                         :height 1.1
-                         :foreground (nth 2 color-theme))
-     (set-face-attribute 'org-level-4 nil
-                         :height 1.05
-                         :foreground (nth 3 color-theme))
-     (set-face-attribute 'org-level-5 nil
-                         :foreground (nth 4 color-theme))
-     (set-face-attribute 'org-level-6 nil
-                         :foreground (nth 5 color-theme))
+      ;;("✿" "❀" "◉" "○" "❁" "✽" "✲" "✱" "✻" "✼" "✽" "✾")
+      ;; org ellipsis options, other than the default Go to Node...
+      ;; not supported in common font, but supported in Symbola (my fall-back font) ?, ?, ?
+    (setq org-ellipsis "  ")
+   (defun col-strip (col-str)
+      (butlast (split-string (mapconcat (lambda (x) (concat "#" x " "))
+                                        (split-string col-str "-")
+                                        "") " ")))
+    (setq color-schemes (list
+                         (col-strip "a21d1d-5497de-8e35b7-ffff5b-56cb7d-df5252-707efa") ; red blue purple study
+                         (col-strip "2278bf-e15554-3bb273-507c6d-6e5775-598d91-7768ae") ; blue red green okay
+                         (col-strip "c7b7ee-2a2b2e-a29190-de8c7d-dcedb9") ; custom
+                         ))
+    (setq pick-color 1)
+     (setq color-theme (nth pick-color color-schemes))
+      (set-face-attribute 'org-level-1 nil
+                          :height 1.4
+                          :foreground (nth 0 color-theme)
+                          :slant 'normal
+                          :weight 'bold)
+      (set-face-attribute 'org-level-2 nil
+                          :height 1.3
+                          :slant 'normal
+                          :foreground (nth 1 color-theme))
+      (set-face-attribute 'org-level-3 nil
+                          :height 1.2
+                          :slant 'normal
+                          :foreground (nth 2 color-theme))
+      (set-face-attribute 'org-level-4 nil
+                          :height 1.1
+                          :slant 'normal
+                          :foreground (nth 3 color-theme))
+      (set-face-attribute 'org-level-5 nil
+                          :slant 'normal
+                          :foreground (nth 4 color-theme))
+      (set-face-attribute 'org-level-6 nil
+                          :slant 'normal
+                          :foreground (nth 5 color-theme))
 
 #+END_SRC
 **** Alters
