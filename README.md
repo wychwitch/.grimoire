@@ -19,6 +19,9 @@ The collection of all my dotfiles
 ```bash
 git clone --depth 1 -- https://github.com/marlonrichert/zsh-snap.git
 source zsh-snap/install.zsh
+
+cargo install sccache du-dust bat zellij mprocs ripgrep bob-nvim gitui irust bacon porsmo speedtest-rs
+RUSTC_WRAPPER=~/.cargo/sccache
 ```
 
 ### Windows
@@ -57,6 +60,6 @@ dotbot -c install.conf.yaml
 ## todo
 - [ ] learn how to use *defaults* to restore system prefs if needed
 - [ ] organize these steps into their own scripts
-- [ ] look into using [dotbot](https://github.com/anishathalye/dotbot)
+- [x] look into using [dotbot](https://github.com/anishathalye/dotbot)
 - [ ] checkout [dotfiles.github.io](dotfiles.github.io) and see what other people got goin on
 

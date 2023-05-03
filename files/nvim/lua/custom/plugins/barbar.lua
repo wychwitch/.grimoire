@@ -1,4 +1,4 @@
 return {
 	'romgrk/barbar.nvim',
-	requires = { 'nvim-web-devicons' }
+	dependencies = { 'nvim-tree/nvim-web-devicons' }
 }
