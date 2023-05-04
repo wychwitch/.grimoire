@@ -23,3 +23,5 @@ files/emacs/emacs.d/auto-save-list/.saves-28580-Carbuncle~
 files/keypirinha/portable_folder/Local/Keypirinha.the-grand-libra.log
 *.log
 files/emacs/emacs.d/eln-cache/*
+files/emacs/magic.emacs.d/projectile-bookmarks.eld
+files/emacs/magic.emacs.d/projectile-bookmarks.eld
