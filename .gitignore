@@ -21,3 +21,4 @@ files/keypirinha/portable_folder/Profile/User/Keypirinha.history
 files/keypirinha/portable_folder/Local/Keypirinha.the-grand-libra.catalog
 files/keypirinha/portable_folder/Local/Keypirinha.the-grand-libra.log
 *.log
+files/emacs/emacs.d/eln-cache/*
