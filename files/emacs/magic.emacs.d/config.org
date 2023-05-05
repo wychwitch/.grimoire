@@ -492,7 +492,7 @@ A modern on-the-fly syntax checking extension -- absolute essential
      (setq
        org-pretty-entities t
        org-insert-heading-respect-content t
-  org-modern-star '("✿" "❀" "❁" "✻" "✽" "✼" "✾" "✲" "✱")
+  org-modern-star '("✿" "❀" "✽" "❁" "✻" "✼" "✾" "✲" "✱")
       )
      (menu-bar-mode -1)
      (tool-bar-mode -1)
@@ -515,7 +515,7 @@ h3...) a more visually pleasing look.
   (setq org-return-follows-link  t)
     (setq org-hide-leading-stars nil)
         (use-package org
-          :hook ((org-mode . visual-line-mode)
+          :hook ((ord-mode . visual-line-mode)
                  (org-mode . org-indent-mode)))
 
       ;;("✿" "❀" "◉" "○" "❁" "✽" "✲" "✱" "✻" "✼" "✽" "✾")
