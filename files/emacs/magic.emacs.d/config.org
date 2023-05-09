@@ -4,8 +4,6 @@
 
 
 
-manner, and I've documented as detailed as possible what each code
-snippet does in this file.
 * Settings without corresponding packages
 Clean up the UI and enhance some basic defaults defined in "C Source
 Code". The variable ~ian/indent-width~ controls the default
@@ -74,6 +72,7 @@ possible to keep the configuration consistent. The option
   (setq recentf-max-menu-items 25)
   (setq recentf-max-saved-items 25)
   (global-set-key "\C-x\ \C-r" 'recentf-open-files)
+(global-set-key "\C-x\ \C-q" 'ivy-immediate-done)
         ;;Mappings
               (mapc #'define-prefix-command
                     '(evil-application-map
@@ -486,27 +485,28 @@ A modern on-the-fly syntax checking extension -- absolute essential
 #+END_SRC
 *** Org Modern
 #+BEGIN_SRC emacs-lisp
-  (use-package org-modern
-    :config
-     (with-eval-after-load 'org (global-org-modern-mode))
-     (setq
-       org-pretty-entities t
-       org-insert-heading-respect-content t
-  org-modern-star '("✿" "❀" "✽" "❁" "✻" "✼" "✾" "✲" "✱")
-      )
-     (menu-bar-mode -1)
-     (tool-bar-mode -1)
-     (scroll-bar-mode -1)
+      (use-package org-modern
+        :config
+         (with-eval-after-load 'org (global-org-modern-mode))
+         (setq
+           org-pretty-entities t
+           org-insert-heading-respect-content t
+      org-modern-star '("✿" "❀" "✽" "❁" "✻" "✼" "✾" "✲" "✱")
+          )
+         (menu-bar-mode -1)
+         (tool-bar-mode -1)
+         (scroll-bar-mode -1)
+       )
+  (use-package nerd-icons
+      :custom
+      ;; The Nerd Font you want to use in GUI
+      ;; "Symbols Nerd Font Mono" is the default and is recommended
+      ;; but you can use any other Nerd Font if you want
+       (nerd-icons-font-family "Symbols Nerd Font Mono")
    )
-(use-package nerd-icons
-  :custom
-  ;; The Nerd Font you want to use in GUI
-  ;; "Symbols Nerd Font Mono" is the default and is recommended
-  ;; but you can use any other Nerd Font if you want
-   (nerd-icons-font-family "Symbols Nerd Font Mono")
-  )
-  (with-eval-after-load 'evil-maps
-  (define-key evil-motion-state-map (kbd "RET") nil))
+  (use-package nerd-icons-completion)
+      (with-eval-after-load 'evil-maps
+      (define-key evil-motion-state-map (kbd "RET") nil))
 #+END_SRC
 *** Org Mode
 Some minimal org mode tweaks: org-bullets gives our headings (h1, h2,
@@ -727,4 +727,49 @@ Provides us with hints on available keystroke combinations.
 *** pagebreak lines
 #+BEGIN_SRC emacs-lisp
   (use-package page-break-lines)
+#+END_SRC
+*** writing-related
+#+BEGIN_SRC emacs-lisp
+(setq org-src-preserve-indentation t
+
+    org-src-fontify-natively t
+
+    org-export-latex-listings t
+
+    org-latex-listings 'listings
+
+    org-latex-prefer-user-labels t
+
+    org-confirm-babel-evaluate nil
+
+
+    org-babel-python-command "/usr/bin/env python3")
+(add-to-list 'org-latex-packages-alist '("" "listings"))
+(setq org-latex-pdf-process (list "xelatex %f"))
+(use-package org-contrib)
+  (require 'ox-latex)
+    (require 'ol-bibtex)
+    (require 'ox-extra)
+    (ox-extras-activate '(ignore-headlines))
+    (setq org-clock-persist 'history)
+    (org-clock-persistence-insinuate)
+ (add-to-list 'org-latex-classes
+           '("letter"
+         "\\documentclass{letter}"
+         ("\\section{%s}" . "\\section*{%s}")
+         ("\\subsection{%s}" . "\\subsection*{%s}")
+         ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
+ (add-to-list 'org-latex-classes
+           '("pretty-essay"
+         "\\documentclass{pretty-essay}"
+         ("\\section{%s}" . "\\section*{%s}")
+         ("\\subsection{%s}" . "\\subsection*{%s}")
+         ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
+ (add-to-list 'org-latex-classes
+           '("mla-custom"
+         "\\documentclass{mla-custom}"
+         ("\\section{%s}" . "\\section*{%s}")
+         ("\\subsection{%s}" . "\\subsection*{%s}")
+         ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
+(setq ivy-use-selectable-prompt t)
 #+END_SRC
