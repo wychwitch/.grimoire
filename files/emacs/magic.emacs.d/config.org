@@ -84,6 +84,7 @@ possible to keep the configuration consistent. The option
                       evil-insert-map
                       evil-jump-map
                       evil-option-map
+                      export-map
                       search
                       projectile-key-map
                       evil-tab-map
@@ -111,6 +112,7 @@ possible to keep the configuration consistent. The option
                   ("w" . evil-window-map)
                   ("p" . projectile-key-map)
                   ("z" . writeroom-mode)
+                  ("e" . export-map)
                   ("o" . org-map)
                   :map evil-window-map
                   ("o" . miciah/window-toggle-other-windows)
@@ -154,7 +156,10 @@ possible to keep the configuration consistent. The option
                   ("c" . 'projectile-commander)
                   :map org-map
                   ("t" . org-timestamp)
-                  )
+                  ("c" . org-cite-insert)
+                  :map export-map
+                  ("p" . org-latex-export-to-pdf)
+                  ("t" . org-pandoc-export-to-plain))
                 ;;:custom
                 ;; ...
                 :config
@@ -674,10 +679,24 @@ Provides us with hints on available keystroke combinations.
 #+END_SRC
 *** Writeroom
 #+BEGIN_SRC emacs-lisp
+(require 'wc-mode)
   (use-package writeroom-mode
  :init
   (setq writeroom-width 0.5)
   )
+;;-------------------------------------------
+(defun mywrite-room-headerline ()
+  "Set the headerline to contain the string 'hello world' when in writeroom-mode."
+  (when (bound-and-true-p writeroom-mode)
+    (setq header-line-format '(:eval
+    (if wc-mode
+        (propertize (wc-format-modeline-string "   [Words: %tw(%W %w)/%gw]")
+                   'face '(:foreground "#877B8E")))))))
+
+
+(add-hook 'writeroom-mode-hook #'mywrite-room-headerline)
+
+
 
 #+END_SRC
 *** All The Icons
@@ -747,7 +766,18 @@ Provides us with hints on available keystroke combinations.
 (add-to-list 'org-latex-packages-alist '("" "listings"))
 (setq org-latex-pdf-process (list "xelatex %f"))
 (use-package org-contrib)
-  (require 'ox-latex)
+  (require 'ox-latex
+)
+
+(use-package wc-mode
+:config
+(setq wc-idle-wait 2)
+(setq wc-modeline-format "[Words: %tw(%W + %w)/%gw]")
+)
+(use-package ox-pandoc
+:config
+(setq org-pandoc-options '((wrap . "preserve")))
+)
     (require 'ol-bibtex)
     (require 'ox-extra)
     (ox-extras-activate '(ignore-headlines))
@@ -772,4 +802,13 @@ Provides us with hints on available keystroke combinations.
          ("\\subsection{%s}" . "\\subsection*{%s}")
          ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
 (setq ivy-use-selectable-prompt t)
+(add-hook 'text-mode-hook 'turn-on-visual-line-mode)
+(add-hook 'text-mode-hook 'wc-mode)
+(dolist (hook '(text-mode-hook))
+  (add-hook hook (lambda () (flyspell-mode 1))))
+;(setq-default
+;; mode-line-format '(:eval
+  ;;  (if wc-mode
+    ;;    (propertize (wc-format-modeline-string " Word Count:[%tw]")
+      ;;              'face '(:weight bold)))))
 #+END_SRC
