@@ -197,20 +197,7 @@ require('lazy').setup({
   { import = 'custom.plugins' },
 }, {})
 
-require("obsidian").setup({
-  dir = "~/my-vault",
-  completion = {
-    nvim_cmp = true, -- if using nvim-cmp, otherwise set to false
-  },
-  daily_notes = {
-    folder = "Periodic Notes/Daily",
-  },
-  templates = {
-    subdir = "Templates",
-    date_format = "%Y-%m-%d-%a",
-    time_format = "%H:%M"
-  },
-})
+
 require 'mind'.setup()
 -- [[ Setting options ]]
 -- See `:help vim.o`
