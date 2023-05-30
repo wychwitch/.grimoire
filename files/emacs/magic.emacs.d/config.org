@@ -811,4 +811,11 @@ Provides us with hints on available keystroke combinations.
   ;;  (if wc-mode
     ;;    (propertize (wc-format-modeline-string " Word Count:[%tw]")
       ;;              'face '(:weight bold)))))
+(use-package focus
+  :config
+(add-to-list 'focus-mode-to-thing '(writeroom-mode . paragraph))
+(add-hook 'writeroom-mode-hook 'focus-mode))
+(use-package centered-cursor-mode
+:config
+(add-hook 'writeroom-mode-hook 'centered-cursor-mode))
 #+END_SRC
