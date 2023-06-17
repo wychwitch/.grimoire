@@ -525,3 +525,12 @@ cmp.setup {
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
 --vim.cmd 'autocmd BufNewFile,BufRead *.typ set filetype=typst'
+
+vim.cmd([[
+if has('wsl')
+  augroup Yank
+    autocmd!
+    autocmd TextYankPost * :call system('clip.exe ',@")
+  augroup END
+endif
+]])
