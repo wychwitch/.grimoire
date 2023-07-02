@@ -3,34 +3,34 @@
 local wezterm = require 'wezterm'
 
 local themes = {
-    "FairyFloss",
-    "aikofog (terminal.sexy)",
-    "Harper",
-    "Heetch Light (base16)",
-    "Hopscotch",
-    "Invisibone (terminal.sexy)",
-    "jubi",
-    "Pasque",
-    "purplepeter",
-    "rose-pine-dawn",
-    "Sakura (base16)",
-    "seulbones_dark",
-    "seulbones_light",
-    "Sequia Moonlight",
-    "Whimsy",
-    "wilmersdorf",
+  "FairyFloss",
+  "aikofog (terminal.sexy)",
+  "Harper",
+  "Heetch Light (base16)",
+  "Hopscotch",
+  "Invisibone (terminal.sexy)",
+  "jubi",
+  "Pasque",
+  "purplepeter",
+  "rose-pine-dawn",
+  "Sakura (base16)",
+  "seulbones_dark",
+  "seulbones_light",
+  "Sequia Moonlight",
+  "Whimsy",
+  "wilmersdorf",
 }
 
 wezterm.on('user-var-changed', function(window, pane, name, value)
   local overrides = window:get_config_overrides() or {}
   if name == "ZEN_MODE" then
-     if value == "on" then
-       overrides.font_size = {{zenmode_font_size}}
-     else
-       overrides.font_size = nil
+    if value == "on" then
+      overrides.font_size = { { zenmode_font_size } }
+    else
+      overrides.font_size = nil
     end
   end
-  window:set_config_overrides(overrides) 
+  window:set_config_overrides(overrides)
 end)
 
 
@@ -88,4 +88,5 @@ new_tab = {
         top = '0.5cell',
         bottom = '0.5cell',
     },
+
 }
