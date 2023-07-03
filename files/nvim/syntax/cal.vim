@@ -1,6 +1,7 @@
 set nonumber
 iabbrev todo+ ●
 iabbrev done+ × 
+iabbrev week+ week x -------------
 set formatprg=sort\ -V
 syntax match JournalAll /.*/        " captures the entire buffer
 syntax match JournalDone /^×.*/     " lines containing 'done'  items: ×
@@ -8,6 +9,7 @@ syntax match JournalTodo /^●.*/     " lines containing 'todo'  items: ·
 syntax match JournalEvent /^o.*/    " lines containing 'event' items: o
 syntax match JournalNote /^- .*/    " lines containing 'note'  items: -
 syntax match JournalMoved /^>.*/    " lines containing 'moved' items: >
+syntax match JournalWeek /^week.*/    " lines containing 'moved' items: >
 
 highlight JournalAll    guifg=#797491 
 highlight JournalDone   guifg=#504D60
@@ -15,6 +17,7 @@ highlight JournalTodo   guifg=#B6AFDA
 highlight JournalEvent  guifg=#CCFCD4 
 highlight JournalMoved  guifg=#7E4A4A
 highlight JournalNote   guifg=#E3B0C7
+highlight JournalWeek   guifg=#35B7F3
 
 highlight Conceal ctermbg=none ctermfg=none guibg=none guifg=#FFFFFF gui=bold
 
