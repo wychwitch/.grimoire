@@ -5,7 +5,7 @@ highlight link mkdNonListItemBlock magician
 highlight mkdNonListItemBlock guifg=#FFFFFF
 
 " magicon
-syntax match magIcon '^m:' conceal cchar=󱑷 containedin=magician contained 
+syntax match magIcon '^m:' conceal cchar=理 containedin=magician contained 
 highlight! default link Conceal magIcon
 hi magIcon guifg=NONE
 
@@ -16,7 +16,7 @@ highlight link mkdNonListItemBlock witch
 highlight mkdNonListItemBlock guifg=#FFFFFF
 
 " witchIcon
-syntax match witchIcon '^w:' conceal cchar= containedin=witch contained 
+syntax match witchIcon '^w:' conceal cchar=術 containedin=witch contained 
 highlight! witchIcon guifg=#FFFFFF
 
 "Celeste

@@ -79,3 +79,4 @@ let-env NU_PLUGIN_DIRS = [
 mkdir ~/.cache/starship
 starship init nu | save -f ~/.cache/starship/init.nu
 alias notify-send = wsl-notify-send.exe --category $env.WSL_DISTRO_NAME 
+zoxide init nushell | save -f ~/.zoxide.nu

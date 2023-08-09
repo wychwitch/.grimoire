@@ -38,6 +38,11 @@ P.S. You can delete this when you're done too. It's your config now :)
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
+vim.filetype.add({
+  extension = {
+    月 = 'cal',
+  },
+});
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 vim.wo.foldenable = false
@@ -213,7 +218,20 @@ vim.o.mouse = 'a'
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
-vim.o.clipboard = 'unnamedplus'
+vim.g.clipboard = {
+  name = "WSL CLIPBOARD",
+  copy = {
+    ["+"] = 'clip.exe',
+    ["*"] = 'clip.exe',
+  },
+  paste = {
+    ['+'] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+    ['*'] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+  },
+  cache_enabled = true,
+}
+
+
 
 -- Enable break indent
 vim.o.breakindent = true
@@ -525,3 +543,12 @@ cmp.setup {
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
 --vim.cmd 'autocmd BufNewFile,BufRead *.typ set filetype=typst'
+
+vim.cmd([[
+if has('wsl')
+  augroup Yank
+    autocmd!
+    autocmd TextYankPost * :call system('clip.exe ',@")
+  augroup END
+endif
+]])

@@ -536,3 +536,5 @@ let-env config = {
 }
 source ~/.cache/starship/init.nu
 use ~/soft-alias.nu *
+source ~/.zoxide.nu
+alias calen = ~/grimoire/files/calen.sh
