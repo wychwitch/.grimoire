@@ -45,6 +45,5 @@ directory = "None"
 
 
 [mpv.files]
-"files/mpv" = { target = "C:\\Users\\Blue\\scoop\\mpv\\current", type = "symbolic", recurse = false }
-"files/mpv.conf" = "C:\\Users\\Blue\\scoop\\mpv\\mpv.conf"
+"files/mpv" = { target = "C:\\Users\\Blue\\scoop\\apps\\mpv\\current\\portable_config", type = "symbolic", recurse = false }
 
