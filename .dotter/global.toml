@@ -42,3 +42,9 @@ directory = "None"
 [sioyek.files]
 "files/sioyek/keys_user.config" = "C:\\Users\\lumin\\scoop\\apps\\sioyek\\current\\keys_user.config"
 "files/sioyek/prefs_user.config" = "C:\\Users\\lumin\\scoop\\apps\\sioyek\\current\\prefs_user.config"
+
+
+[mpv.files]
+"files/mpv" = { target = "C:\\Users\\Blue\\scoop\\mpv\\current", type = "symbolic", recurse = false }
+"files/mpv.conf" = "C:\\Users\\Blue\\scoop\\mpv\\mpv.conf"
+
