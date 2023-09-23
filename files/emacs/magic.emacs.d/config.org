@@ -518,7 +518,7 @@ Some minimal org mode tweaks: org-bullets gives our headings (h1, h2,
 h3...) a more visually pleasing look.
 #+BEGIN_SRC emacs-lisp
   (setq org-return-follows-link  t)
-    (setq org-hide-leading-stars nil)
+    (setq org-modern-hide-stars nil)
         (use-package org
           :hook ((ord-mode . visual-line-mode)
                  (org-mode . org-indent-mode)))
