@@ -1,6 +1,8 @@
 -- remember to save using noa like this -> :noa w
 
 local wezterm = require 'wezterm'
+local act = wezterm.action
+
 
 local themes = {
   "FairyFloss",
@@ -88,5 +90,21 @@ new_tab = {
         top = '0.5cell',
         bottom = '0.5cell',
     },
+
+    config.keys = {
+  {
+    key = 'C',
+    mods = 'CTRL',
+    action = wezterm.action.CopyTo 'ClipboardAndPrimarySelection',
+  },
+    -- paste from the clipboard
+  { key = 'V', mods = 'CTRL', action = act.PasteFrom 'Clipboard' },
+
+  -- paste from the primary selection
+  { key = 'V', mods = 'CTRL', action = act.PasteFrom 'PrimarySelection' },
+},
+
+
+
 
 }
