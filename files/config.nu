@@ -177,7 +177,7 @@ let light_theme = {
 
 
 # The default config record. This is where much of your global configuration is setup.
-let-env config = {
+$env.config = {
   # true or false to enable or disable the welcome banner at startup
   show_banner: true
   ls: {
@@ -535,6 +535,6 @@ let-env config = {
   ]
 }
 source ~/.cache/starship/init.nu
-use ~/soft-alias.nu *
-source ~/.zoxide.nu
+#use ~/soft-alias.nu *
+#source ~/.zoxide.nu
 alias calen = ~/grimoire/files/calen.sh
