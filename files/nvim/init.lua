@@ -207,20 +207,6 @@ vim.o.mouse = 'a'
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
-vim.g.clipboard = {
-  name = "WSL CLIPBOARD",
-  copy = {
-    ["+"] = 'clip.exe',
-    ["*"] = 'clip.exe',
-  },
-  paste = {
-    ['+'] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
-    ['*'] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
-  },
-  cache_enabled = true,
-}
-
-
 
 -- Enable break indent
 vim.o.breakindent = true
