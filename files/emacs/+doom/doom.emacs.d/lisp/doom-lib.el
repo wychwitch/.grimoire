@@ -4,8 +4,10 @@
 
 ;;; Custom error types
 (define-error 'doom-error "An unexpected Doom error")
+(define-error 'doom-font-error "Could not find a font on your system" 'doom-error)
 (define-error 'doom-nosync-error "Doom hasn't been initialized yet; did you remember to run 'doom sync' in the shell?" 'doom-error)
 (define-error 'doom-core-error "Unexpected error in Doom's core" 'doom-error)
+(define-error 'doom-context-error "Incorrect context error" 'doom-error)
 (define-error 'doom-hook-error "Error in a Doom startup hook" 'doom-error)
 (define-error 'doom-autoload-error "Error in Doom's autoloads file" 'doom-error)
 (define-error 'doom-user-error "Error caused by user's config or system" 'doom-error)
@@ -18,10 +20,27 @@
 ;;; Logging
 
 (defvar doom-inhibit-log (not (or noninteractive init-file-debug))
-  "If non-nil, suppress `doom-log' output.")
+  "If non-nil, suppress `doom-log' output completely.")
 
-(defun doom--log (text &rest args)
-  (let ((inhibit-message (not init-file-debug))
+(defvar doom-log-level
+  (if init-file-debug
+      (if-let ((level (getenv-internal "DEBUG"))
+               (level (string-to-number level))
+               ((not (zerop level))))
+          level
+        2)
+    0)
+  "How verbosely to log from `doom-log' calls.
+
+0 -- No logging at all.
+1 -- Only warnings.
+2 -- Warnings and notices.
+3 -- Debug info, warnings, and notices.")
+
+(defun doom--log (level text &rest args)
+  (let ((inhibit-message (if noninteractive
+                             (not init-file-debug)
+                           (> level doom-log-level)))
         (absolute? (string-prefix-p ":" text)))
     (apply #'message
            (propertize (concat "* %.06f:%s" (if (not absolute?) ":") text)
@@ -37,14 +56,19 @@
             ":")
            args)))
 
+;; This is a macro instead of a function to prevent the potentially expensive
+;; evaluation of its arguments when debug mode is off. Return non-nil.
 (defmacro doom-log (message &rest args)
-  "Log a message in *Messages*.
-
-Does not emit the message in the echo area. This is a macro instead of a
-function to prevent the potentially expensive evaluation of its arguments when
-debug mode is off. Return non-nil."
+  "Log a message to stderr or *Messages* (without displaying in the echo area)."
   (declare (debug t))
-  `(unless doom-inhibit-log (doom--log ,message ,@args)))
+  (let ((level (if (integerp message)
+                   (prog1 message
+                     (setq message (pop args)))
+                 2)))
+    `(when (and (not doom-inhibit-log)
+                (or (not noninteractive)
+                    (<= ,level doom-log-level)))
+       (doom--log ,level ,message ,@args))))
 
 
 ;;
@@ -88,7 +112,7 @@ list is returned as-is."
 ;;
 ;;; Public library
 
-(define-obsolete-function-alias 'doom-enlist 'ensure-list "v3.0.0")
+(define-obsolete-function-alias 'doom-enlist 'ensure-list "3.0.0")
 
 (defun doom-unquote (exp)
   "Return EXP unquoted."
@@ -150,20 +174,17 @@ If NOERROR, don't throw an error if PATH doesn't exist."
      (signal (car e) (cdr e)))
     (error
      (setq path (locate-file path load-path (get-load-suffixes)))
-     (signal (cond ((not (and path (featurep 'doom)))
-                    'error)
-                   ((file-in-directory-p path (expand-file-name "cli" doom-core-dir))
-                    'doom-cli-error)
-                   ((file-in-directory-p path doom-core-dir)
-                    'doom-core-error)
-                   ((file-in-directory-p path doom-user-dir)
-                    'doom-user-error)
-                   ((file-in-directory-p path doom-profile-dir)
-                    'doom-profile-error)
-                   ((file-in-directory-p path doom-modules-dir)
-                    'doom-module-error)
-                   ('doom-error))
-             (list path e)))))
+     (if (not (and path (featurep 'doom)))
+         (signal (car e) (cdr e))
+       (cl-loop for (err . dir)
+                in `((doom-cli-error     . ,(expand-file-name "cli" doom-core-dir))
+                     (doom-core-error    . ,doom-core-dir)
+                     (doom-user-error    . ,doom-user-dir)
+                     (doom-profile-error . ,doom-profile-dir)
+                     (doom-module-error  . ,doom-modules-dir))
+                if (file-in-directory-p path dir)
+                do (signal err (list (file-relative-name path (expand-file-name "../" dir))
+                                     e)))))))
 
 (defun doom-require (feature &optional filename noerror)
   "Like `require', but handles and enhances Doom errors.
@@ -245,29 +266,29 @@ TRIGGER-HOOK is a list of quoted hooks and/or sharp-quoted functions."
       (fset
        fn (lambda (&rest _)
             ;; Only trigger this after Emacs has initialized.
-            (when (and after-init-time
-                       (not running?)
+            (when (and (not running?)
+                       (not (doom-context-p 'init))
                        (or (daemonp)
                            ;; In some cases, hooks may be lexically unset to
                            ;; inhibit them during expensive batch operations on
                            ;; buffers (such as when processing buffers
-                           ;; internally). In these cases we should assume this
-                           ;; hook wasn't invoked interactively.
+                           ;; internally). In that case assume this hook was
+                           ;; invoked non-interactively.
                            (and (boundp hook)
                                 (symbol-value hook))))
               (setq running? t)  ; prevent infinite recursion
               (doom-run-hooks hook-var)
               (set hook-var nil))))
-      (cond ((daemonp)
-             ;; In a daemon session we don't need all these lazy loading
-             ;; shenanigans. Just load everything immediately.
-             (add-hook 'after-init-hook fn 'append))
-            ((eq hook 'find-file-hook)
-             ;; Advise `after-find-file' instead of using `find-file-hook'
-             ;; because the latter is triggered too late (after the file has
-             ;; opened and modes are all set up).
-             (advice-add 'after-find-file :before fn '((depth . -101))))
-            ((add-hook hook fn -101)))
+      (when (daemonp)
+        ;; In a daemon session we don't need all these lazy loading shenanigans.
+        ;; Just load everything immediately.
+        (add-hook 'server-after-make-frame-hook fn 'append))
+      (if (eq hook 'find-file-hook)
+          ;; Advise `after-find-file' instead of using `find-file-hook' because
+          ;; the latter is triggered too late (after the file has opened and
+          ;; modes are all set up).
+          (advice-add 'after-find-file :before fn '((depth . -101)))
+        (add-hook hook fn -101))
       fn)))
 
 (defun doom-compile-functions (&rest fns)
@@ -292,18 +313,18 @@ TRIGGER-HOOK is a list of quoted hooks and/or sharp-quoted functions."
 
 (defmacro file! ()
   "Return the file of the file this macro was called."
-  (or
-   ;; REVIEW: Use `macroexp-file-name' once 27 support is dropped.
-   (let ((file (car (last current-load-list))))
-     (if (stringp file) file))
-   (bound-and-true-p byte-compile-current-file)
-   load-file-name
-   buffer-file-name   ; for `eval'
-   (error "file!: cannot deduce the current file path")))
+  (or (bound-and-true-p byte-compile-current-file)
+      load-file-name
+      (buffer-file-name (buffer-base-buffer))  ; for `eval'
+      ;; REVIEW: Use `macroexp-file-name' once 27 support is dropped.
+      (let ((file (car (last current-load-list))))
+        (if (stringp file) file))
+      (error "file!: cannot deduce the current file path")))
 
 (defmacro dir! ()
-  "Return the directory of the file this macro was called."
-  (file-name-directory (macroexpand '(file!))))
+  "Return the directory of the file in which this macro was called."
+  (let (file-name-handler-alist)
+    (file-name-directory (macroexpand '(file!)))))
 
 ;; REVIEW Should I deprecate this? The macro's name is so long...
 (defalias 'letenv! 'with-environment-variables)
@@ -312,24 +333,26 @@ TRIGGER-HOOK is a list of quoted hooks and/or sharp-quoted functions."
   "Temporarily rebind function, macros, and advice in BODY.
 
 Intended as syntax sugar for `cl-letf', `cl-labels', `cl-macrolet', and
-temporary advice.
+temporary advice (`define-advice').
 
 BINDINGS is either:
 
-  A list of, or a single, `defun', `defun*', `defmacro', or `defadvice' forms.
   A list of (PLACE VALUE) bindings as `cl-letf*' would accept.
+  A list of, or a single, `defun', `defun*', `defmacro', or `defadvice' forms.
 
-TYPE is one of:
+The def* forms accepted are:
 
-  `defun' (uses `cl-letf')
-  `defun*' (uses `cl-labels'; allows recursive references),
-  `defmacro' (uses `cl-macrolet')
-  `defadvice' (uses `defadvice!' before BODY, then `undefadvice!' after)
-
-NAME, ARGLIST, and BODY are the same as `defun', `defun*', `defmacro', and
-`defadvice!', respectively.
-
-\(fn ((TYPE NAME ARGLIST &rest BODY) ...) BODY...)"
+  (defun NAME (ARGS...) &rest BODY)
+    Defines a temporary function with `cl-letf'
+  (defun* NAME (ARGS...) &rest BODY)
+    Defines a temporary function with `cl-labels' (allows recursive
+    definitions).
+  (defmacro NAME (ARGS...) &rest BODY)
+    Uses `cl-macrolet'.
+  (defadvice FUNCTION WHERE ADVICE)
+    Uses `advice-add' (then `advice-remove' afterwards).
+  (defadvice FUNCTION (HOW LAMBDA-LIST &optional NAME DEPTH) &rest BODY)
+    Defines temporary advice with `define-advice'."
   (declare (indent defun))
   (setq body (macroexp-progn body))
   (when (memq (car bindings) '(defun defun* defmacro defadvice))
@@ -340,16 +363,33 @@ NAME, ARGLIST, and BODY are the same as `defun', `defun*', `defmacro', and
       (setq
        body (pcase type
               (`defmacro `(cl-macrolet ((,@rest)) ,body))
-              (`defadvice `(progn (defadvice! ,@rest)
-                                  (unwind-protect ,body (undefadvice! ,@rest))))
-              ((or `defun `defun*)
+              (`defadvice
+               (if (keywordp (cadr rest))
+                   (cl-destructuring-bind (target where fn) rest
+                     `(when-let (fn ,fn)
+                        (advice-add ,target ,where fn)
+                        (unwind-protect ,body (advice-remove ,target fn))))
+                 (let* ((fn (pop rest))
+                        (argspec (pop rest)))
+                   (when (< (length argspec) 3)
+                     (setq argspec
+                           (list (nth 0 argspec)
+                                 (nth 1 argspec)
+                                 (or (nth 2 argspec) (gensym (format "%s-a" (symbol-name fn)))))))
+                   (let ((name (nth 2 argspec)))
+                     `(progn
+                        (define-advice ,fn ,argspec ,@rest)
+                        (unwind-protect ,body
+                          (advice-remove #',fn #',name)
+                          ,(if name `(fmakunbound ',name))))))))
+              (`defun
                `(cl-letf ((,(car rest) (symbol-function #',(car rest))))
                   (ignore ,(car rest))
-                  ,(if (eq type 'defun*)
-                       `(cl-labels ((,@rest)) ,body)
-                     `(cl-letf (((symbol-function #',(car rest))
-                                 (lambda! ,(cadr rest) ,@(cddr rest))))
-                        ,body))))
+                  (cl-letf (((symbol-function #',(car rest))
+                             (lambda! ,(cadr rest) ,@(cddr rest))))
+                    ,body)))
+              (`defun*
+               `(cl-labels ((,@rest)) ,body))
               (_
                (when (eq (car-safe type) 'function)
                  (setq type (list 'symbol-function type)))
@@ -619,7 +659,7 @@ This is a variadic `cl-pushnew'."
 (defmacro add-load-path! (&rest dirs)
   "Add DIRS to `load-path', relative to the current file.
 The current file is the file from which `add-to-load-path!' is used."
-  `(let ((default-directory ,(dir!))
+  `(let ((default-directory (dir!))
          file-name-handler-alist)
      (dolist (dir (list ,@dirs))
        (cl-pushnew (expand-file-name dir) load-path :test #'string=))))
@@ -639,8 +679,8 @@ is:
     (after! (:and package-a package-b ...) BODY...)
     (after! (:and package-a (:or package-b package-c) ...) BODY...)
 - An unquoted list of package symbols (i.e. BODY is evaluated once both magit
-  and git-gutter have loaded)
-    (after! (magit git-gutter) BODY...)
+  and diff-hl have loaded)
+    (after! (magit diff-hl) BODY...)
   If :or/:any/:and/:all are omitted, :and/:all are implied.
 
 This emulates `eval-after-load' with a few key differences:
@@ -800,7 +840,7 @@ This macro accepts, in order:
               func-forms)))
     `(progn
        ,@defn-forms
-       (dolist (hook (nreverse ',hook-forms))
+       (dolist (hook ',(nreverse hook-forms))
          (dolist (func (list ,@func-forms))
            ,(if remove-p
                 `(remove-hook hook func ,local-p)
@@ -881,15 +921,15 @@ testing advice (when combined with `rotate-text').
        (dolist (target (cdr targets))
          (advice-remove target #',symbol)))))
 
+
+;;
+;;; Backports
+
 (defmacro defbackport! (type symbol &rest body)
   "Backport a function/macro/alias from later versions of Emacs."
   (declare (indent defun) (doc-string 4))
   (unless (fboundp (doom-unquote symbol))
     `(,type ,symbol ,@body)))
-
-
-;;
-;;; Backports
 
 ;; `format-spec' wasn't autoloaded until 28.1
 (defbackport! autoload 'format-spec "format-spec")
@@ -934,7 +974,7 @@ VARIABLES is a list of variable settings of the form (VAR VALUE),
 where VAR is the name of the variable (a string) and VALUE
 is its value (also a string).
 
-The previous values will be be restored upon exit."
+The previous values will be restored upon exit."
   (declare (indent 1) (debug (sexp body)))
   (unless (consp variables)
     (error "Invalid VARIABLES: %s" variables))

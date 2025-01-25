@@ -1,16 +1,11 @@
 ;;; editor/evil/config.el -*- lexical-binding: t; -*-
 
-(defvar +evil-repeat-keys (cons ";" ",")
-  "The keys to use for universal repeating motions.
-
-This is a cons cell whose CAR is the key for repeating a motion forward, and
-whose CDR is for repeating backward. They should both be `kbd'-able strings.
-
-Set this to `nil' to disable universal-repeating on these keys.")
-
 (defvar +evil-want-o/O-to-continue-comments t
   "If non-nil, the o/O keys will continue comment lines if the point is on a
 line with a linewise comment.")
+
+(defvar +evil-want-move-window-to-wrap-around nil
+  "If non-nil, `+evil/window-move-*' commands will wrap around.")
 
 (defvar +evil-preprocessor-regexp "^\\s-*#[a-zA-Z0-9_]"
   "The regexp used by `+evil/next-preproc-directive' and
@@ -54,6 +49,14 @@ directives. By default, this only recognizes C directives.")
         (cond ((modulep! :emacs undo +tree) 'undo-tree)
               ((modulep! :emacs undo) 'undo-fu)
               ((> emacs-major-version 27) 'undo-redo)))
+
+  ;; Fix #7141
+  (defadvice! +evil--persist-state-a (fn &rest args)
+    "When changing major modes, Evil's state is lost. This advice preserves it."
+    :around #'set-auto-mode
+    (if evil-state
+        (evil-save-state (apply fn args))
+      (apply fn args)))
 
   ;; Slow this down from 0.02 to prevent blocking in large or folded buffers
   ;; like magit while incrementally highlighting matches.
@@ -147,23 +150,6 @@ directives. By default, this only recognizes C directives.")
     :after-until #'evil-global-marker-p
     (and (>= char ?2) (<= char ?9)))
 
-  ;; REVIEW Fix #2493: dir-locals cannot target fundamental-mode when evil-mode
-  ;;        is active. See hlissner/doom-emacs#2493. Revert this if
-  ;;        emacs-evil/evil#1268 is resolved upstream.
-  (defadvice! +evil--fix-local-vars-a (&rest _)
-    :before #'turn-on-evil-mode
-    (when (eq major-mode 'fundamental-mode)
-      (hack-local-variables)))
-
-  ;; HACK Invoking helpful from evil-ex throws a "No recursive edit is in
-  ;;      progress" error because, between evil-ex and helpful,
-  ;;      `abort-recursive-edit' gets called one time too many.
-  (defadvice! +evil--fix-helpful-key-in-evil-ex-a (key-sequence)
-    :before #'helpful-key
-    (when (evil-ex-p)
-      (run-at-time 0.1 nil #'helpful-key key-sequence)
-      (abort-recursive-edit)))
-
   ;; Make J (evil-join) remove comment delimiters when joining lines.
   (advice-add #'evil-join :around #'+evil-join-a)
 
@@ -193,34 +179,6 @@ directives. By default, this only recognizes C directives.")
   ;; Make o/O continue comments (see `+evil-want-o/O-to-continue-comments' to disable)
   (advice-add #'evil-open-above :around #'+evil--insert-newline-above-and-respect-comments-a)
   (advice-add #'evil-open-below :around #'+evil--insert-newline-below-and-respect-comments-a)
-
-  ;; --- custom interactive codes -----------
-  ;; These arg types will highlight matches in the current buffer
-  (evil-ex-define-argument-type regexp-match
-    :runner (lambda (flag &optional arg) (+evil-ex-regexp-match flag arg 'inverted)))
-  (evil-ex-define-argument-type regexp-global-match
-    :runner +evil-ex-regexp-match)
-
-  (defun +evil--regexp-match-args (arg)
-    (when (evil-ex-p)
-      (cl-destructuring-bind (&optional arg flags)
-          (evil-delimited-arguments arg 2)
-        (list arg (string-to-list flags)))))
-
-  ;; Other commands can make use of this
-  (evil-define-interactive-code "<//>"
-    :ex-arg regexp-match
-    (+evil--regexp-match-args evil-ex-argument))
-
-  (evil-define-interactive-code "<//!>"
-    :ex-arg regexp-global-match
-    (+evil--regexp-match-args evil-ex-argument))
-
-  ;; Forward declare these so that ex completion works, even if the autoloaded
-  ;; functions aren't loaded yet.
-  (evil-add-command-properties '+evil:align :ex-arg 'regexp-match)
-  (evil-add-command-properties '+evil:align-right :ex-arg 'regexp-match)
-  (evil-add-command-properties '+multiple-cursors:evil-mc :ex-arg 'regexp-global-match)
 
   ;; Lazy load evil ex commands
   (delq! 'evil-ex features)
@@ -265,14 +223,22 @@ directives. By default, this only recognizes C directives.")
   :hook (org-mode . embrace-org-mode-hook)
   :hook (ruby-mode . embrace-ruby-mode-hook)
   :hook (emacs-lisp-mode . embrace-emacs-lisp-mode-hook)
-  :hook ((lisp-mode emacs-lisp-mode clojure-mode racket-mode hy-mode)
-         . +evil-embrace-lisp-mode-hook-h)
-  :hook ((c++-mode rustic-mode csharp-mode java-mode swift-mode typescript-mode)
+  :hook ((c++-mode c++-ts-mode rustic-mode csharp-mode java-mode swift-mode typescript-mode)
          . +evil-embrace-angle-bracket-modes-hook-h)
   :hook (scala-mode . +evil-embrace-scala-mode-hook-h)
   :init
   (after! evil-surround
     (evil-embrace-enable-evil-surround-integration))
+
+  ;; HACK: This must be done ASAP, before embrace has a chance to
+  ;;   buffer-localize `embrace--pairs-list' (which happens right after it calls
+  ;;   `embrace--setup-defaults'), otherwise any new, global default pairs we
+  ;;   define won't be in scope.
+  (defadvice! +evil--embrace-init-escaped-pairs-a (&rest args)
+    "Add escaped-sequence support to embrace."
+    :after #'embrace--setup-defaults
+    (embrace-add-pair-regexp ?\\ "\\[[{(]" "\\[]})]" #'+evil--embrace-escaped
+                             (embrace-build-help "\\?" "\\?")))
   :config
   (setq evil-embrace-show-help-p nil)
 
@@ -294,30 +260,12 @@ directives. By default, this only recognizes C directives.")
             embrace--pairs-list))
     (embrace-add-pair-regexp ?l "\\[a-z]+{" "}" #'+evil--embrace-latex))
 
-  (defun +evil-embrace-lisp-mode-hook-h ()
-    ;; Avoid `embrace-add-pair-regexp' because it would overwrite the default
-    ;; `f' rule, which we want for other modes
-    (push (cons ?f (make-embrace-pair-struct
-                    :key ?f
-                    :read-function #'+evil--embrace-elisp-fn
-                    :left-regexp "([^ ]+ "
-                    :right-regexp ")"))
-          embrace--pairs-list))
-
   (defun +evil-embrace-angle-bracket-modes-hook-h ()
     (let ((var (make-local-variable 'evil-embrace-evil-surround-keys)))
       (set var (delq ?< evil-embrace-evil-surround-keys))
       (set var (delq ?> evil-embrace-evil-surround-keys)))
     (embrace-add-pair-regexp ?< "\\_<[a-z0-9-_]+<" ">" #'+evil--embrace-angle-brackets)
-    (embrace-add-pair ?> "<" ">"))
-
-  ;; Add escaped-sequence support to embrace
-  (setf (alist-get ?\\ (default-value 'embrace--pairs-list))
-        (make-embrace-pair-struct
-         :key ?\\
-         :read-function #'+evil--embrace-escaped
-         :left-regexp "\\[[{(]"
-         :right-regexp "\\[]})]")))
+    (embrace-add-pair ?> "<" ">")))
 
 
 (use-package! evil-escape
@@ -395,7 +343,8 @@ directives. By default, this only recognizes C directives.")
   :config
   (pushnew! evil-traces-argument-type-alist
             '(+evil:align . evil-traces-global)
-            '(+evil:align-right . evil-traces-global))
+            '(+evil:align-right . evil-traces-global)
+            '(+multiple-cursors:evil-mc . evil-traces-substitute))
   (evil-traces-mode))
 
 
@@ -420,8 +369,7 @@ directives. By default, this only recognizes C directives.")
 ;;
 ;;; Keybinds
 
-;; Keybinds that have no Emacs+evil analogues (i.e. don't exist):
-;;   zu{q,w} - undo last marking
+;; TODO: zu{q,w} - undo last marking
 
 (map! :v  "@"     #'+evil:apply-macro
       :m  [C-i]   #'evil-jump-forward
@@ -499,17 +447,13 @@ directives. By default, this only recognizes C directives.")
        :nv "gd"  #'+lookup/definition
        :nv "gD"  #'+lookup/references
        :nv "gf"  #'+lookup/file
-       :nv "gI"  #'+lookup/implementations
-       :nv "gA"  #'+lookup/assignments)
+       :nv "gI"  #'+lookup/implementations)
       (:when (modulep! :tools eval)
        :nv "gr"  #'+eval:region
        :n  "gR"  #'+eval/buffer
        :v  "gR"  #'+eval:replace-region
        ;; Restore these keybinds, since the blacklisted/overwritten gr/gR will
        ;; undo them:
-       (:after helpful
-        :map helpful-mode-map
-        :n "gr" #'helpful-update)
        (:after compile
         :map (compilation-mode-map compilation-minor-mode-map)
         :n "gr" #'recompile)
@@ -523,7 +467,11 @@ directives. By default, this only recognizes C directives.")
        (:after elfeed
         :map elfeed-search-mode-map
         :n "gr" #'elfeed-search-update--force
-        :n "gR" #'elfeed-search-fetch))
+        :n "gR" #'elfeed-search-fetch)
+       (:after eglot
+        :map eglot-mode-map
+        :nv "gd" #'+lookup/definition
+        :nv "gD" #'+lookup/references))
 
       ;; custom evil keybinds
       :nv "zn"    #'+evil:narrow-buffer
@@ -581,6 +529,7 @@ directives. By default, this only recognizes C directives.")
       ;; evil-easymotion
       (:after evil-easymotion
        :m "gs" evilem-map
+       ;; TODO: Use named functions
        (:map evilem-map
         "a" (evilem-create #'evil-forward-arg)
         "A" (evilem-create #'evil-backward-arg)
@@ -609,15 +558,26 @@ directives. By default, this only recognizes C directives.")
       :v "gl" #'evil-lion-left
       :v "gL" #'evil-lion-right
 
-      ;; Omni-completion
-      (:when (modulep! :completion company)
-       (:prefix "C-x"
-        :i "C-l"    #'+company/whole-lines
-        :i "C-k"    #'+company/dict-or-keywords
-        :i "C-f"    #'company-files
-        :i "C-]"    #'company-etags
-        :i "s"      #'company-ispell
-        :i "C-s"    #'company-yasnippet
-        :i "C-o"    #'company-capf
-        :i "C-n"    #'+company/dabbrev
-        :i "C-p"    #'+company/dabbrev-code-previous)))
+      ;; Emulation of Vim's omni-completion keybinds
+      (:unless evil-disable-insert-state-bindings
+        (:prefix "C-x"
+          (:when (modulep! :completion company)
+           :i "C-l"  #'+company/whole-lines
+           :i "C-k"  #'+company/dict-or-keywords
+           :i "C-f"  #'company-files
+           :i "C-]"  #'company-etags
+           :i "s"    #'company-ispell
+           :i "C-s"  #'company-yasnippet
+           :i "C-o"  #'company-capf
+           :i "C-n"  #'+company/dabbrev
+           :i "C-p"  #'+company/dabbrev-code-previous)
+          (:when (modulep! :completion corfu)
+           :i "C-l"  #'cape-line
+           :i "C-k"  #'cape-keyword
+           :i "C-f"  #'cape-file
+           :i "C-]"  #'complete-tag
+           :i "s"    #'cape-dict
+           :i "C-s"  #'yasnippet-capf
+           :i "C-o"  #'completion-at-point
+           :i "C-n"  #'cape-dabbrev
+           :i "C-p"  #'+corfu/dabbrev-this-buffer))))

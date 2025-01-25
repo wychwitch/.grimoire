@@ -4,6 +4,7 @@
 ;;; Flycheck
 
 (use-package! flycheck
+  :unless (modulep! +flymake)
   :commands flycheck-list-errors flycheck-buffer
   :hook (doom-first-buffer . global-flycheck-mode)
   :config
@@ -45,29 +46,53 @@
 
 
 (use-package! flycheck-popup-tip
+  :unless (modulep! +flymake)
   :commands flycheck-popup-tip-show-popup flycheck-popup-tip-delete-popup
   :hook (flycheck-mode . +syntax-init-popups-h)
   :config
-  (setq flycheck-popup-tip-error-prefix "X ")
-  (after! evil
-    ;; Don't display popups while in insert or replace mode, as it can affect
-    ;; the cursor's position or cause disruptive input delays.
-    (add-hook! '(evil-insert-state-entry-hook evil-replace-state-entry-hook)
-               #'flycheck-popup-tip-delete-popup)
-    (defadvice! +syntax--disable-flycheck-popup-tip-maybe-a (&rest _)
-      :before-while #'flycheck-popup-tip-show-popup
-      (if evil-local-mode
-          (eq evil-state 'normal)
-        (not (bound-and-true-p company-backend))))))
+  (setq flycheck-popup-tip-error-prefix (if (modulep! +icons) "⚠ " "[!] "))
+
+  ;; HACK: Only display the flycheck popup if we're in normal mode (for evil
+  ;;   users) or if no selection or completion is active. This popup can
+  ;;   interfere with the active evil mode, clear active regions, and other
+  ;;   funny business (see #7242).
+  (defadvice! +syntax--disable-flycheck-popup-tip-maybe-a (&rest _)
+    :before-while #'flycheck-popup-tip-show-popup
+    (if (and (bound-and-true-p evil-local-mode)
+             (not (evil-emacs-state-p)))
+        (evil-normal-state-p)
+      (and (not (region-active-p))
+           (not (bound-and-true-p company-backend))
+           (not (ignore-errors (>= corfu--index 0)))))))
 
 
 (use-package! flycheck-posframe
   :when (modulep! +childframe)
+  :unless (modulep! +flymake)
   :hook (flycheck-mode . +syntax-init-popups-h)
   :config
-  (setq flycheck-posframe-warning-prefix "! "
-        flycheck-posframe-info-prefix "··· "
-        flycheck-posframe-error-prefix "X ")
+  (if (modulep! +icons)
+      (setq flycheck-posframe-warning-prefix "⚠ "
+            flycheck-posframe-info-prefix "ⓘ "
+            flycheck-posframe-error-prefix "⮾ ")
+    (setq flycheck-posframe-warning-prefix "[?] "
+          flycheck-posframe-info-prefix "[i] "
+          flycheck-posframe-error-prefix "[!] "))
+
+  ;; HACK: Hide the flycheck posframe immediately on the next keypress/user
+  ;;   action, otherwise it lingers until the next time the user is idle.
+  (defun +syntax--flycheck-posframe-hide-h ()
+    (unless (flycheck-posframe-check-position)
+      (posframe-hide flycheck-posframe-buffer))
+    (remove-hook 'post-command-hook #'+syntax--flycheck-posframe-hide-h))
+
+  (defadvice! +syntax-hide-posframe-on-next-command-a (fn &rest args)
+    :around #'flycheck-posframe-show-posframe
+    (letf! ((defun posframe-show (&rest args)
+              (add-hook 'post-command-hook #'+syntax--flycheck-posframe-hide-h)
+              (apply posframe-show args)))
+      (apply fn args)))
+
   (after! company
     ;; Don't display popups if company is open
     (add-hook 'flycheck-posframe-inhibit-functions #'company--active-p))
@@ -80,4 +105,19 @@
 
 
 ;;
-;;; TODO Flymake
+;;; Flymake
+
+(use-package! flymake
+  :when (modulep! +flymake)
+  :hook ((prog-mode text-mode) . flymake-mode)
+  :config
+  (setq flymake-fringe-indicator-position 'right-fringe))
+
+
+(use-package! flymake-popon
+  :when (modulep! +flymake)
+  :hook (flymake-mode . flymake-popon-mode)
+  :config
+  (setq flymake-popon-method (if (modulep! +childframe)
+                                 'posframe
+                               'popon)))

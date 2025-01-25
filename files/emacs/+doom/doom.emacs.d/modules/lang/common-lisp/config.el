@@ -1,5 +1,9 @@
 ;;; lang/common-lisp/config.el -*- lexical-binding: t; -*-
 
+(defcustom +lisp-quicklisp-paths '("~/quicklisp" "~/.quicklisp")
+  "A list of directories to search for Quicklisp's site files."
+  :type '(repeat directory))
+
 ;; `lisp-mode' is loaded at startup. In order to lazy load its config we need to
 ;; pretend it isn't loaded
 (defer-feature! lisp-mode)
@@ -24,11 +28,15 @@
     (remove-hook 'lisp-mode-hook #'sly-editing-mode))
 
   (after! lisp-mode
-    (set-repl-handler! 'lisp-mode #'sly-mrepl)
+    (set-repl-handler! 'lisp-mode #'+lisp/open-repl)
     (set-eval-handler! 'lisp-mode #'sly-eval-region)
+    (set-formatter! 'lisp-indent #'apheleia-indent-lisp-buffer :modes '(lisp-mode))
     (set-lookup-handlers! 'lisp-mode
       :definition #'sly-edit-definition
       :documentation #'sly-describe-symbol))
+
+  ;; This needs to be appended so it fires later than `sly-editing-mode'
+  (add-hook 'lisp-mode-local-vars-hook #'sly-lisp-indent-compatibility-mode 'append)
 
   ;; HACK Ensures that sly's contrib modules are loaded as soon as possible, but
   ;;      also as late as possible, so users have an opportunity to override
@@ -94,9 +102,10 @@
 
         (:localleader
          :map lisp-mode-map
-         :desc "Sly"          "'" #'sly
-         :desc "Sly (ask)"    ";" (cmd!! #'sly '-)
-         :desc "Expand macro" "m" #'macrostep-expand
+         :desc "Sly"                       "'" #'sly
+         :desc "Sly (ask)"                 ";" (cmd!! #'sly '-)
+         :desc "Expand macro"              "m" #'macrostep-expand
+         :desc "Find local Quicklisp file" "f" #'+lisp/find-file-in-quicklisp
          (:prefix ("c" . "compile")
           :desc "Compile file"          "c" #'sly-compile-file
           :desc "Compile/load file"     "C" #'sly-compile-and-load-file
@@ -105,12 +114,13 @@
           :desc "Remove notes"          "n" #'sly-remove-notes
           :desc "Compile region"        "r" #'sly-compile-region)
          (:prefix ("e" . "evaluate")
-          :desc "Evaluate buffer"     "b" #'sly-eval-buffer
-          :desc "Evaluate last"       "e" #'sly-eval-last-expression
-          :desc "Evaluate/print last" "E" #'sly-eval-print-last-expression
-          :desc "Evaluate defun"      "f" #'sly-eval-defun
-          :desc "Undefine function"   "F" #'sly-undefine-function
-          :desc "Evaluate region"     "r" #'sly-eval-region)
+          :desc "Evaluate buffer"        "b" #'sly-eval-buffer
+          :desc "Evaluate defun"         "d" #'sly-overlay-eval-defun
+          :desc "Evaluate last"          "e" #'sly-eval-last-expression
+          :desc "Evaluate/print last"    "E" #'sly-eval-print-last-expression
+          :desc "Evaluate defun (async)" "f" #'sly-eval-defun
+          :desc "Undefine function"      "F" #'sly-undefine-function
+          :desc "Evaluate region"        "r" #'sly-eval-region)
          (:prefix ("g" . "goto")
           :desc "Go back"              "b" #'sly-pop-find-definition-stack
           :desc "Go to"                "d" #'sly-edit-definition
@@ -136,8 +146,10 @@
           :desc "Who sets"                "S" #'sly-who-sets)
          (:prefix ("r" . "repl")
           :desc "Clear REPL"         "c" #'sly-mrepl-clear-repl
+          :desc "Load System"        "l" #'sly-asdf-load-system
           :desc "Quit connection"    "q" #'sly-quit-lisp
           :desc "Restart connection" "r" #'sly-restart-inferior-lisp
+          :desc "Reload Project"     "R" #'+lisp/reload-project
           :desc "Sync REPL"          "s" #'sly-mrepl-sync)
          (:prefix ("s" . "stickers")
           :desc "Toggle breaking stickers" "b" #'sly-stickers-toggle-break-on-stickers
@@ -146,7 +158,9 @@
           :desc "Fetch stickers"           "f" #'sly-stickers-fetch
           :desc "Replay stickers"          "r" #'sly-stickers-replay
           :desc "Add/remove sticker"       "s" #'sly-stickers-dwim)
-         (:prefix ("t" . "trace")
+         (:prefix ("t" . "test")
+          :desc "Test System" "s" #'sly-asdf-test-system)
+         (:prefix ("T" . "trace")
           :desc "Toggle"         "t" #'sly-toggle-trace-fdefinition
           :desc "Toggle (fancy)" "T" #'sly-toggle-fancy-trace
           :desc "Untrace all"    "u" #'sly-untrace-all)))
@@ -159,3 +173,13 @@
   :defer t
   :init
   (add-to-list 'sly-contribs 'sly-repl-ansi-color))
+
+(use-package! sly-asdf
+  :defer t
+  :init
+  (add-to-list 'sly-contribs 'sly-asdf 'append))
+
+(use-package! sly-stepper
+  :defer t
+  :init
+  (add-to-list 'sly-contribs 'sly-stepper))

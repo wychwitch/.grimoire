@@ -3,6 +3,12 @@
 #+created:  February 19, 2017
 #+since:    2.0.0
 
+#+begin_quote
+  *This module is deprecated* in favor of the [[doom-module::completion corfu]]
+    module. This module will be in maintenance mode until it is eventually
+    removed. Consider switching to the Corfu module instead.
+#+end_quote
+
 * Description :unfold:
 This module provides code completion, powered by [[https://github.com/company-mode/company-mode][company-mode]]. Many of Doom's
 [[doom-module::lang]] modules require it for "intellisense" functionality.
@@ -16,7 +22,7 @@ https://assets.doomemacs.org/completion/company/overlay.png
 
 ** Module flags
 - +childframe ::
-  Display completion candidates in a [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Child-Frames.html][child frame]] rather than an overlay or
+  Display completion candidates in a [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Child-Frames.html][childframe]] rather than an overlay or
   tooltip. *Requires GUI Emacs.*
 - +tng ::
   Invoke completion on [[kbd:][TAB]] instad of [[kbd:][C-SPC]]. When company is active, [[kbd:][TAB]] and
@@ -44,7 +50,7 @@ find out if you're missing any dependencies.
 
 * TODO Usage
 #+begin_quote
- 🔨 /This module's usage documentation is incomplete./ [[doom-contrib-module:][Complete it?]]
+ 󱌣 /This module's usage documentation is incomplete./ [[doom-contrib-module:][Complete it?]]
 #+end_quote
 
 ** Code completion
@@ -87,7 +93,7 @@ More information can be found [[https://github.com/oantolin/orderless#company][h
 
 * TODO Configuration
 #+begin_quote
- 🔨 /This module's configuration documentation is incomplete./ [[doom-contrib-module:][Complete it?]]
+ 󱌣 /This module's configuration documentation is incomplete./ [[doom-contrib-module:][Complete it?]]
 #+end_quote
 
 ** Enable company backend(s) in certain modes
@@ -142,5 +148,5 @@ on changing what backends are available for that mode.
 
 * TODO Appendix
 #+begin_quote
- 🔨 This module has no appendix yet. [[doom-contrib-module:][Write one?]]
+ 󱌣 This module has no appendix yet. [[doom-contrib-module:][Write one?]]
 #+end_quote

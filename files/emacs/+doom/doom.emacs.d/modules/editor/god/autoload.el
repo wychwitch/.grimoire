@@ -1,8 +1,5 @@
 ;;; editor/god/autoload.el -*- lexical-binding: t; -*-
 
-(defvar +god-default-color (face-background 'cursor)
-  "Default cursor and bar color.")
-
 (defvar +god-read-only-mode-color "Gray"
   "Cursor and bar color when `read-only-mode' is enabled.")
 
@@ -16,7 +13,7 @@
 (defun +god--configure-cursor-and-modeline-h ()
   "Configure cursor type, cursor color and doom-modeline bar color depending on mode."
   (let* ((is-fill-overflow (> (current-column) fill-column))
-         (previous-cursor-color (face-background 'cursor))
+         (previous-cursor-color (frame-parameter nil 'cursor-color))
          (previous-modeline-color (and (facep 'doom-modeline-bar)
                                        (face-background 'doom-modeline-bar)))
          (is-god-mode (bound-and-true-p god-local-mode))
@@ -29,7 +26,7 @@
           (cond (buffer-read-only +god-read-only-mode-color)
                 (is-fill-overflow +god-fill-overflow-color)
                 (overwrite-mode +god-overwrite-mode-color)
-                (t +god-default-color))))
+                ((or previous-cursor-color (face-background 'cursor))))))
     (setq cursor-type next-cursor-type)
     (unless (eq previous-cursor-color next-cursor-and-modeline-color)
       (set-cursor-color next-cursor-and-modeline-color))

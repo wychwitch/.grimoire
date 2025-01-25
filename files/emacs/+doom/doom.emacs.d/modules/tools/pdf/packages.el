@@ -1,5 +1,5 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; tools/pdf/packages.el
 
-(package! pdf-tools :pin "bb0b71f5bafd81d0b5647c4ec48fafa0bb6f6c21")
-(package! saveplace-pdf-view :pin "54ed966b842501c3c092dbf57b372e37b033c578")
+(package! pdf-tools :pin "30b50544e55b8dbf683c2d932d5c33ac73323a16")
+(package! saveplace-pdf-view :pin "70e9ec40565021f4b5d51e4523f4c716183a8eef")

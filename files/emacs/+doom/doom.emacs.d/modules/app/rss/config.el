@@ -14,8 +14,9 @@ easier to scroll through.")
 (defvar +rss-workspace-name "*rss*"
   "Name of the workspace that contains the elfeed buffer.")
 
+
 ;;
-;; Packages
+;;; Packages
 
 (use-package! elfeed
   :commands elfeed
@@ -83,7 +84,22 @@ easier to scroll through.")
           (message "elfeed-org: ignoring %S because it can't be read" file))
         (setq rmh-elfeed-org-files (cl-remove-if-not #'file-exists-p files))))))
 
+
 (use-package! elfeed-goodies
   :after elfeed
   :config
   (elfeed-goodies/setup))
+
+
+(use-package! elfeed-tube
+  :when (modulep! +youtube)
+  :after elfeed
+  :config (elfeed-tube-setup)
+  (map! (:map elfeed-show-mode-map
+         [remap save-buffer] #'elfeed-tube-save
+         "F" #'elfeed-tube-fetch)
+        (:map elfeed-search-mode-map
+         [remap save-buffer] #'elfeed-tube-save
+         "F" #'elfeed-tube-fetch
+         "C-c C-f" #'elfeed-tube-mpv-follow-mode
+         "C-c C-w" #'elfeed-tube-mpv-where)))

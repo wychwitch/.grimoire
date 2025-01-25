@@ -1,4 +1,5 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; lang/rust/packages.el
 
-(package! rustic :pin "6eec9713876d698510ee3715698fd42c1571e307")
+(package! rust-mode :pin "c87f6f82bd484fb1c15009c8a3518ebb62942605")
+(package! rustic :pin "d765680373234a6c231acf20c76b07422afcfdf9")

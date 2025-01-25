@@ -2,6 +2,9 @@
 
 (defvar evil-collection-key-blacklist)
 
+;; must be set before evil/evil-collection is loaded
+(defvar evil-want-keybinding nil)
+
 ;; We load evil-collection ourselves for these reasons:
 ;;
 ;; 1. To truly lazy load it. Some of its modules, like
@@ -23,9 +26,7 @@
            (not (doom-context-p 'reload))
            (modulep! +everywhere))
 
-  (setq evil-collection-company-use-tng (modulep! :completion company +tng)
-        ;; must be set before evil/evil-collection is loaded
-        evil-want-keybinding nil)
+  (setq evil-collection-company-use-tng (modulep! :completion company +tng))
 
   (defvar +evil-collection-disabled-list
     '(anaconda-mode
@@ -40,15 +41,17 @@
       free-keys
       helm
       help
-      indent
       image
+      indent
+      kmacro
       kotlin-mode
+      lispy
       outline
       replace
       shortdoc
       simple
       slime
-      lispy)
+      tab-bar)
     "A list of `evil-collection' modules to ignore. See the definition of this
 variable for an explanation of the defaults (in comments). See
 `evil-collection-mode-list' for a list of available options.")
@@ -98,19 +101,24 @@ variable for an explanation of the defaults (in comments). See
       bm
       bookmark
       (buff-menu "buff-menu")
+      bufler
       calc
       calendar
       cider
       cmake-mode
+      color-rg
       comint
       company
       compile
       consult
       corfu
+      crdt
+      (csv "csv-mode")
       (custom cus-edit)
       cus-theme
-      daemons
+      dape
       dashboard
+      daemons
       deadgrep
       debbugs
       debug
@@ -121,17 +129,21 @@ variable for an explanation of the defaults (in comments). See
       dired
       dired-sidebar
       disk-usage
+      distel
       doc-view
       docker
+      eat
       ebib
       ebuku
       edbi
       edebug
       ediff
       eglot
+      elpaca
+      ement
       explain-pause-mode
-      elfeed
       eldoc
+      elfeed
       elisp-mode
       elisp-refs
       elisp-slime-nav
@@ -153,6 +165,7 @@ variable for an explanation of the defaults (in comments). See
       geiser
       ggtags
       git-timemachine
+      gited
       gnus
       go-mode
       grep
@@ -163,8 +176,9 @@ variable for an explanation of the defaults (in comments). See
       helpful
       hg-histedit
       hungry-delete
+      hyrolo
       ibuffer
-      image
+      (image image-mode)
       image-dired
       image+
       imenu
@@ -174,8 +188,10 @@ variable for an explanation of the defaults (in comments). See
       info
       ivy
       js2-mode
+      ,@(if (>= emacs-major-version 30) '(kmacro))
       leetcode
       lispy
+      lms
       log-edit
       log-view
       lsp-ui-imenu
@@ -184,11 +200,13 @@ variable for an explanation of the defaults (in comments). See
       macrostep
       man
       (magit magit-repos magit-submodule)
+      magit-repos
       magit-section
       magit-todos
       markdown-mode
       monky
       mpc
+      mpdel
       mu4e
       mu4e-conversation
       neotree
@@ -235,6 +253,7 @@ variable for an explanation of the defaults (in comments). See
       snake
       so-long
       speedbar
+      tab-bar
       tablist
       tar-mode
       telega
@@ -276,7 +295,7 @@ and complains if a module is loaded too early (during startup)."
     (unless (memq (or (car-safe module) module) disabled-list)
       (doom-log "editor:evil: loading evil-collection-%s %s"
                 (or (car-safe module) module)
-                (if doom-init-time "" "(too early!)"))
+                (if after-init-time "" "(too early!)"))
       (with-demoted-errors "evil-collection error: %s"
         (evil-collection-init (list module)))))
 
@@ -324,6 +343,9 @@ and complains if a module is loaded too early (during startup)."
       (+evil-collection-init 'replace))
     (add-transient-hook! 'indent-rigidly
       (+evil-collection-init '(indent "indent")))
+    (when (>= emacs-major-version 30)
+      (add-transient-hook! 'kmacro-menu-mode
+        (+evil-collection-init 'kmacro)))
     (add-transient-hook! 'minibuffer-setup-hook
       (when evil-collection-setup-minibuffer
         (+evil-collection-init 'minibuffer)

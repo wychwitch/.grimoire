@@ -73,10 +73,6 @@ stored in `persp-save-dir'.")
       "Ensure a main workspace exists."
       (when persp-mode
         (let (persp-before-switch-functions)
-          ;; Try our best to hide the nil perspective.
-          (when (equal (car persp-names-cache) persp-nil-name)
-            (pop persp-names-cache))
-          ;; ...and create a *real* main workspace to fill this role.
           (unless (or (persp-get-by-name +workspaces-main)
                       ;; Start from 2 b/c persp-mode counts the nil workspace
                       (> (hash-table-count *persp-hash*) 2))
@@ -84,9 +80,10 @@ stored in `persp-save-dir'.")
           ;; HACK Fix #319: the warnings buffer gets swallowed when creating
           ;;      `+workspaces-main', so display it ourselves, if it exists.
           (when-let (warnings (get-buffer "*Warnings*"))
-            (save-excursion
-              (display-buffer-in-side-window
-               warnings '((window-height . shrink-window-if-larger-than-buffer))))))))
+            (unless (get-buffer-window warnings)
+              (save-excursion
+                (display-buffer-in-side-window
+                 warnings '((window-height . shrink-window-if-larger-than-buffer)))))))))
     (defun +workspaces-init-persp-mode-h ()
       (cond (persp-mode
              ;; `uniquify' breaks persp-mode. It renames old buffers, which causes
@@ -282,4 +279,7 @@ stored in `persp-save-dir'.")
   (add-hook! 'tab-bar-mode-hook
     (defun +workspaces-set-up-tab-bar-integration-h ()
       (add-hook 'persp-before-deactivate-functions #'+workspaces-save-tab-bar-data-h)
-      (add-hook 'persp-activated-functions #'+workspaces-load-tab-bar-data-h))))
+      (add-hook 'persp-activated-functions #'+workspaces-load-tab-bar-data-h)
+      ;; Load and save configurations for tab-bar.
+      (add-hook 'persp-before-save-state-to-file-functions #'+workspaces-save-tab-bar-data-to-file-h)
+      (+workspaces-load-tab-bar-data-from-file-h))))

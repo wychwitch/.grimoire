@@ -2,38 +2,37 @@
 ;;; lang/python/packages.el
 
 ;; Major modes
-(package! pip-requirements :pin "216cd1690f80cc965d4ae47b8753fc185f778ff6")
+(package! pip-requirements :pin "31e0dc62abb2d88fa765e0ea88b919d756cc0e4f")
 (when (modulep! +cython)
-  (package! cython-mode :pin "b2015596b38df4b7b2978d87385da20d69e4e822")
+  (package! cython-mode :pin "3e4790559d3168fe992cf2aa62f01423038cedb5")
   (when (modulep! :checkers syntax)
     (package! flycheck-cython :pin "ecc4454d35ab5317ab66a04406f36f0c1dbc0b76")))
 
 ;; LSP
 (when (modulep! +lsp)
   (unless (modulep! :tools lsp +eglot)
-    (if (modulep! +pyright)
-        (package! lsp-pyright :pin "2fa2c897659909ba9804baba72a108578d007677")
-      (package! lsp-python-ms :pin "f8e7c4bcaefbc3fd96e1ca53d17589be0403b828"))))
+    (when (modulep! +pyright)
+      (package! lsp-pyright :pin "0c0d72aedd18b16f48379b7d2f9ecb9c068713b0"))))
 
 ;; Programming environment
-(package! anaconda-mode :pin "ca8edbaa7662d97e4a4416ec9a8d743863303911")
+(package! anaconda-mode :pin "f900bd7656a03aa24ef3295251f266736f7756eb")
 (when (modulep! :completion company)
-  (package! company-anaconda :pin "da1566db41a68809ef7f91ebf2de28118067c89b"))
+  (package! company-anaconda :pin "169252fca79a79da41ef22f2ec0eab0cf1313966"))
 
 ;; Environment management
 (package! pipenv :pin "3af159749824c03f59176aff7f66ddd6a5785a10")
 (package! pyvenv :pin "31ea715f2164dd611e7fc77b26390ef3ca93509b")
 (when (modulep! +pyenv)
-  (package! pyenv-mode :pin "b818901b8eac0e260ced66a6a5acabdbf6f5ba99"))
+  (package! pyenv-mode :pin "76787ea44f633426df402341663784db3a9e9639"))
 (when (modulep! +conda)
-  (package! conda :pin "cb9544e8f7d6c642b7fd8c1ecc2cf4fc7370c352"))
+  (package! conda :pin "ce748a53f9c7d7a7d112632d32c848d6e5482e18"))
 (when (modulep! +poetry)
-  (package! poetry :pin "5a8575bc78d7fc5a39b2ba4665a909e36961fceb"))
+  (package! poetry :pin "1dff0d4a51ea8aff5f6ce97b154ea799902639ad"))
 
 ;; Testing frameworks
 (package! nose :pin "f8528297519eba911696c4e68fa88892de9a7b72")
-(package! python-pytest :pin "33c921adaa6c9c8f7cceba2342114c6b406e0d7c")
+(package! python-pytest :pin "dcdaec6fe203f08bda0f5ee1931370dfd075a4ff")
 
 ;; Import managements
-(package! pyimport :pin "c006a5fd0e5c9e297aa2ad71b2f02f463286b5e3")
+(package! pyimport :pin "4398ce8dd64fa0f685f4bf8683a35087649346d3")
 (package! py-isort :pin "e67306f459c47c53a65604e4eea88a3914596560")

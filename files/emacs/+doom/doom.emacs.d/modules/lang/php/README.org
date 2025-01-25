@@ -4,19 +4,20 @@
 #+since:    1.3
 
 * Description :unfold:
-This module adds support for PHP 5.3+ (including PHP7) to Doom Emacs.
+This module adds support for PHP 5.3+ (including PHP8) to Doom Emacs.
 
 - ctags-based code completion (~company-php~ and ~phpctags~)
 - eldoc support (~ac-php~ and ~php-extras~)
-- REPL (~php-boris~)
+- REPL (~psysh~)
 - Code refactoring commands (~php-refactor-mode~)
 - Unit-test commands (~phpunit~)
 - Support for ~laravel~ and ~composer~ projects (with project-specific snippets)
+- LSP support (via the [[doom-module:+lsp]] flag)
 - [[../../editor/file-templates/templates/php-mode][File templates]]
 - [[https://github.com/hlissner/doom-snippets/tree/master/php-mode][Snippets]]
 
 #+begin_quote
- 💬 PHP was the first programming language I got paid to code in, back in the
+ 󰟶 PHP was the first programming language I got paid to code in, back in the
     Cretaceous period (2003). My sincerest apologies go out to all the
     programmers who inherited my earliest PHP work. I know you're out there,
     writhing in your straitjackets.
@@ -31,8 +32,8 @@ This module adds support for PHP 5.3+ (including PHP7) to Doom Emacs.
 - +hack ::
   Add support for the [[https://hacklang.org/][Hack dialect of PHP]] by Facebook.
 - +lsp ::
-  Enable LSP support for ~php-mode~. Requires [[doom-module::tools lsp]] and a langserver
-  (supports [[https://phpactor.readthedocs.io/en/develop/usage/standalone.html][phpactor]] and intelephense).
+  Enable LSP support for ~php-mode~. Requires [[doom-module::tools lsp]] and a
+  langserver (supports [[https://emacs-lsp.github.io/lsp-mode/page/lsp-phpactor/][phpactor]], [[https://emacs-lsp.github.io/lsp-mode/page/lsp-intelephense/][intelephense]], [[https://emacs-lsp.github.io/lsp-mode/page/lsp-serenata/][serenata]], [[https://emacs-lsp.github.io/lsp-mode/page/lsp-php/][php-language-server]]).
 - +tree-sitter ::
   Leverages tree-sitter for better syntax highlighting and structural text
   editing. Requires [[doom-module::tools tree-sitter]].
@@ -40,15 +41,11 @@ This module adds support for PHP 5.3+ (including PHP7) to Doom Emacs.
 ** Packages
 - [[doom-package:async]]
 - [[doom-package:hack-mode]] if [[doom-module:+hack]]
-- [[doom-package:php-boris]]
-- [[doom-package:php-cs-fixer]] if [[doom-package::editor format]]
+- [[doom-package:psysh]]
 - [[doom-package:php-extras]]
 - [[doom-package:php-mode]]
 - [[doom-package:php-refactor-mode]]
 - [[doom-package:phpunit]]
-- if [[doom-module:+lsp]]
-  - [[doom-package:phpactor]]
-  - [[doom-package:company-phpactor]]
 
 ** Hacks
 /No hacks documented for this module./
@@ -73,7 +70,7 @@ provided for reference:
 
 #+begin_src sh
 brew tap homebrew/homebrew-php
-brew install php71  # or php53, php54, php55
+brew install php@8.0  # or php53, php54, php55
 brew install composer
 
 # If you use intelephense:
@@ -96,7 +93,13 @@ sudo zypper install php-composer
 # If you use intelephense:
 sudo zypper install nodejs npm
 #+end_src
+*** Debian
+#+begin_src sh
+sudo apt-get install php php-common
 
+# If you use intelephense:
+sudo apt-get install nodejs npm
+#+end_src
 ** LSP Support
 There are a number of currently supported LSP servers:
 
@@ -112,23 +115,19 @@ which will trigger either when you open a PHP project or manually invoke
 The others have to be installed manually and added to your =$PATH=.
 
 ** Dependencies
-- ~boris~ (REPL)
+- ~pysh~ (REPL)
 - ~phpctags~ (better code completion)
 - ~phpunit~ (unit test commands)
-- ~php-cs-fixer~ and ~@prettier/plugin-php~ (for code formatting)
+- ~phpcbf~, provided by ~squizlabs/php_codesniffer~ (for code formatting)
 + ~phpactor~ (for LSP if intelephense isn't desired)
 
 #+begin_src sh
 composer global require \
-    d11wtq/boris \
+    psy/psysh \
     phpunit/phpunit \
     techlivezheng/phpctags \
-    friendsofphp/php-cs-fixer \
+    squizlabs/php_codesniffer \
     phpactor/phpactor
-
-# Needed by php-cs-fixer, otherwise you'll get "Couldn't resolve parser
-# 'php'" errors
-npm install -g @prettier/plugin-php
 #+end_src
 
 You must ensure that =$HOME/.composer/vendor/bin= is in =$PATH=, so these
@@ -144,9 +143,11 @@ command line.
 *NOTE* phpactor doesn't have to be installed via =composer=, just has to exist in
 your =$PATH=.
 
+*NOTE* Phpactor cannot be installed, globally at least, with PHP ^8.
+
 * TODO Usage
 #+begin_quote
- 🔨 /This module's usage documentation is incomplete./ [[doom-contrib-module:][Complete it?]]
+ 󱌣 /This module's usage documentation is incomplete./ [[doom-contrib-module:][Complete it?]]
 #+end_quote
 
 ** PHPUnit
@@ -181,11 +182,11 @@ commands:
 | [[kbd:][<localleader> m c o]] | ~composer-find-json-file~         |
 | [[kbd:][<localleader> m c l]] | ~composer-view-lock-file~         |
 
-These are all invokable via [[kbd:][M-x]] too.
+These are all run via [[kbd:][M-x]] too.
 
 * TODO Configuration
 #+begin_quote
- 🔨 /This module's configuration documentation is incomplete./ [[doom-contrib-module:][Complete it?]]
+ 󱌣 /This module's configuration documentation is incomplete./ [[doom-contrib-module:][Complete it?]]
 #+end_quote
 
 ** Docker Compose
@@ -244,5 +245,5 @@ And add the following to your config:
 
 * TODO Appendix
 #+begin_quote
- 🔨 This module has no appendix yet. [[doom-contrib-module:][Write one?]]
+ 󱌣 This module has no appendix yet. [[doom-contrib-module:][Write one?]]
 #+end_quote

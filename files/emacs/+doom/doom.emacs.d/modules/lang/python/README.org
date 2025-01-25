@@ -10,7 +10,7 @@ This module adds [[https://www.python.org/][Python]] support to Doom Emacs.
 - Snippets
 - Run tests ([[doom-package:nose]], [[doom-package:pytest]])
 - Auto-format (with ~black~, requires [[doom-module::editor format]])
-- LSP integration (=mspyls=, =pyls=, or =pyright=)
+- LSP integration (=pyls=, =jedi=, =ruff=, =pyright=, or =basedpyright=)
 
 ** Maintainers
 - [[doom-user:][@hlissner]]
@@ -23,15 +23,15 @@ This module adds [[https://www.python.org/][Python]] support to Doom Emacs.
 - +cython ::
   Enable support for Cython files support.
 - +lsp ::
-  Enable LSP support for ~python-mode~. Requires [[doom-module::tools lsp]] and a langserver
-  (supports mspyls, pyls, and pyright).
+  Enable LSP support for ~python-mode~. Requires [[doom-module::tools lsp]] and a
+  langserver (=pyls=, =jedi=, =ruff=, or =pyright=).
 - +poetry ::
   Enable Python packaging, dependency management, and virtual environment
   support via [[https://python-poetry.org/][Poetry]].
 - +pyenv ::
   Enable Python virtual environment support via [[https://github.com/pyenv/pyenv][pyenv]]
 - +pyright ::
-  Use the pyright LSP server instead of mspyls or pyls (requires [[doom-module:+lsp]]).
+  Add support for the pyright LSP server (requires [[doom-module:+lsp]]).
 - +tree-sitter ::
   Leverages tree-sitter for better syntax highlighting and structural text
   editing. Requires [[doom-module::tools tree-sitter]].
@@ -53,8 +53,6 @@ This module adds [[https://www.python.org/][Python]] support to Doom Emacs.
 - if [[doom-module:+lsp]]
   - if [[doom-module:+pyright]]
     - [[doom-package:lsp-pyright]]
-  - else
-    - [[doom-package:lsp-python-ms]]
 
 ** Hacks
 - [[doom-package:anaconda-mode]] is configured to activate when [[doom-package:lsp-mode]] (or [[doom-package:eglot]]) don't -- or
@@ -86,16 +84,20 @@ For LSP support the [[doom-module::tools lsp]] module must be enabled, along wit
 [[doom-module:+lsp]] flag. By default, it supports [[doom-package:mspyls]] and [[doom-package:pyls]], in that order. With the
 [[doom-module:+pyright]] flag, it will try Pyright first.
 
-Each of these servers must be installed on your system via your OS package
-manager or manually:
-- [[https://pypi.org/project/python-language-server/][*pyls*]] can be installed with ~$ pip install python-language-server[all]~.
-- *mspyls* can be installed by typing ~M-x lsp-install-server RET mspyls~.
-- *pyright* can be installed with ~$ pip install pyright~ or ~$ npm i -g
-  pyright~.
+An alternative LSP server can be used by installing them through the
+[[cmd:][lsp-install-server]] command, or an external package manager. For example:
+- To install *basedpyright*: ~$ pip install basedpyright~
+- To install *pyright*: ~$ pip install pyright~ or ~$ npm i -g pyright~.
+- To install [[https://pypi.org/project/python-language-server/][*pyls*]]: ~$ pip install python-language-server[all]~.
+- To install *mspyls*: ~M-x lsp-install-server RET mspyls~.
+
+** Formatter
+
+Formatting is handled using the [[doom-module::editor format]] module via [[https://black.readthedocs.io/en/stable/getting_started.html#installation][black]].
 
 * TODO Usage
 #+begin_quote
- 🔨 /This module's usage documentation is incomplete./ [[doom-contrib-module:][Complete it?]]
+ 󱌣 /This module's usage documentation is incomplete./ [[doom-contrib-module:][Complete it?]]
 #+end_quote
 
 This module supports LSP. It requires installation of [[https://pypi.org/project/python-language-server/][Python Language Server]],
@@ -107,7 +109,7 @@ To enable support for auto-formatting with black enable [[doom-module::editor fo
 | Binding           | Description                      |
 |-------------------+----------------------------------|
 | [[kbd:][<localleader> c c]] | ~Compile Cython buffer~          |
-| [[kbd:][<localleader> i i]] | ~Insert mising imports~          |
+| [[kbd:][<localleader> i i]] | ~Insert missing imports~         |
 | [[kbd:][<localleader> i r]] | ~Remove unused imports~          |
 | [[kbd:][<localleader> i s]] | ~Sort imports~                   |
 | [[kbd:][<localleader> i o]] | ~Optimize imports~               |
@@ -132,11 +134,11 @@ To enable support for auto-formatting with black enable [[doom-module::editor fo
 
 * TODO Configuration
 #+begin_quote
- 🔨 /This module's configuration documentation is incomplete./ [[doom-contrib-module:][Complete it?]]
+ 󱌣 /This module's configuration documentation is incomplete./ [[doom-contrib-module:][Complete it?]]
 #+end_quote
 
-This module has the following variables to set extra arguments to [[https://ipython.org/][ipython]] and
-[[https://jupyter.org/][jupyter]] shells:
+The arguments passed to the [[https://ipython.org/][ipython]] or [[https://jupyter.org/][jupyter]] shells can be altered through
+these two variables:
 #+begin_src emacs-lisp
 ;; in $DOOMDIR/config.el
 (setq +python-ipython-repl-args '("-i" "--simple-prompt" "--no-color-info"))
@@ -151,5 +153,5 @@ This module has the following variables to set extra arguments to [[https://ipyt
 
 * TODO Appendix
 #+begin_quote
- 🔨 This module has no appendix yet. [[doom-contrib-module:][Write one?]]
+ 󱌣 This module has no appendix yet. [[doom-contrib-module:][Write one?]]
 #+end_quote

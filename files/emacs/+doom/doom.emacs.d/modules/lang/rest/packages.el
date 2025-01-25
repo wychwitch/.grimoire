@@ -1,10 +1,10 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; lang/rest/packages.el
 
-(package! restclient :pin "9e2cfa86529133eba6c9ef53794be182f15e4c21")
+(package! restclient :pin "e2a2b13482d72634f8e49864cd9e5c907a5fe137")
 (when (modulep! :completion company)
   (package! company-restclient :pin "e5a3ec54edb44776738c13e13e34c85b3085277b"))
 
 (when (modulep! +jq)
-  (package! jq-mode :pin "071c1c29bac30351ad338136f2b625e5601365cd")
-  (package! restclient-jq :pin "ae79e7dd283890072da69b8f48aeec1afd0d9442"))
+  (package! jq-mode :pin "a0f79eba786d46f01aeabb5913aadc337e985d6c")
+  (package! restclient-jq :pin "e2a2b13482d72634f8e49864cd9e5c907a5fe137"))

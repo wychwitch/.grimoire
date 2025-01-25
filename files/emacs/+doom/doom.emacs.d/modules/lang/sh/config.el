@@ -14,13 +14,10 @@
   :mode ("\\.bats\\'" . sh-mode)
   :mode ("\\.\\(?:zunit\\|env\\)\\'" . sh-mode)
   :mode ("/bspwmrc\\'" . sh-mode)
+  :magic ("#compdef " . sh-mode)
   :config
   (set-docsets! 'sh-mode "Bash")
   (set-electric! 'sh-mode :words '("else" "elif" "fi" "done" "then" "do" "esac" ";;"))
-  (set-formatter! 'shfmt
-    '("shfmt" "-ci"
-      ("-i" "%d" (unless indent-tabs-mode tab-width))
-      ("-ln" "%s" (pcase sh-shell (`bash "bash") (`mksh "mksh") (_ "posix")))))
   (set-repl-handler! 'sh-mode #'+sh/open-repl)
   (set-lookup-handlers! 'sh-mode :documentation #'+sh-lookup-documentation-handler)
   (set-ligatures! 'sh-mode
@@ -83,12 +80,8 @@
   (set-company-backend! 'sh-mode '(company-shell company-files))
   (setq company-shell-delete-duplicates t
         ;; whatis lookups are exceptionally slow on macOS (#5860)
-        company-shell-dont-fetch-meta IS-MAC))
+        company-shell-dont-fetch-meta (featurep :system 'macos)))
 
-(use-package! fish-mode
-  :when (modulep! +fish)
-  :defer t
-  :config (set-formatter! 'fish-mode #'fish_indent))
 
 (use-package! powershell
   :when (modulep! +powershell)

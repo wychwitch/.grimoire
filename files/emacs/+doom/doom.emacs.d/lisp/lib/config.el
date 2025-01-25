@@ -1,8 +1,5 @@
 ;;; lisp/lib/config.el -*- lexical-binding: t; -*-
 
-(defvar doom-bin-dir (expand-file-name "bin/" doom-emacs-dir))
-(defvar doom-bin (expand-file-name "doom" doom-bin-dir))
-
 ;;;###autoload
 (defvar doom-after-reload-hook nil
   "A list of hooks to run after `doom/reload' has reloaded Doom.")
@@ -55,23 +52,49 @@ And jumps to your `doom!' block."
 
 (defmacro doom--if-compile (command on-success &optional on-failure)
   (declare (indent 2))
-  `(let ((default-directory doom-emacs-dir))
-     (with-current-buffer (compile ,command t)
-       (let ((w (get-buffer-window (current-buffer))))
-         (select-window w)
-         (add-hook
-          'compilation-finish-functions
-          (lambda (_buf status)
-            (if (equal status "finished\n")
-                (progn
-                  (delete-window w)
-                  ,on-success)
-              ,on-failure))
-          nil 'local)))))
+  `(let ((doom-bin "doom")
+         (default-directory doom-emacs-dir)
+         (exec-path (cons doom-bin-dir exec-path)))
+     (when (and (featurep :system 'windows)
+                (string-match-p "cmdproxy.exe$" shell-file-name))
+       (unless (executable-find "pwsh")
+         (user-error "Powershell 3.0+ is required, but pwsh.exe was not found in your $PATH"))
+       (setq doom-bin "doom.ps1"))
+     ;; Ensure the bin/doom operates with the same environment as this
+     ;; running session.
+     (letenv! (("PATH" (string-join exec-path path-separator))
+               ("EMACS" (doom-path invocation-directory invocation-name))
+               ("EMACSDIR" doom-emacs-dir)
+               ("DOOMDIR" doom-user-dir)
+               ("DOOMLOCALDIR" doom-local-dir)
+               ("DEBUG" (if doom-debug-mode (number-to-string doom-log-level) "")))
+       (with-current-buffer
+           (compile (format ,command (expand-file-name doom-bin doom-bin-dir)) t)
+         (let ((w (get-buffer-window (current-buffer))))
+           (select-window w)
+           (add-hook
+            'compilation-finish-functions
+            (lambda (_buf status)
+              (if (equal status "finished\n")
+                  (progn
+                    (delete-window w)
+                    ,on-success)
+                ,on-failure))
+            nil 'local))))))
 
+(defvar doom-reload-command
+  (format "%s sync -B -e"
+          ;; /usr/bin/env doesn't exist on Android
+          (if (featurep :system 'android)
+              "sh %s"
+            "%s"))
+  "Command that `doom/reload' runs.")
 ;;;###autoload
 (defun doom/reload ()
   "Reloads your private config.
+
+WARNING: This command is experimental! If you haven't configured your config to
+be idempotent, then this could cause compounding slowness or errors.
 
 This is experimental! It will try to do as `bin/doom sync' does, but from within
 this Emacs session. i.e. it reload autoloads files (if necessary), reloads your
@@ -80,7 +103,7 @@ package list, and lastly, reloads your private config.el.
 Runs `doom-after-reload-hook' afterwards."
   (interactive)
   (mapc #'require (cdr doom-incremental-packages))
-  (doom--if-compile (format "%S sync -e" doom-bin)
+  (doom--if-compile doom-reload-command
       (doom-context-with '(reload modules)
         (doom-run-hooks 'doom-before-reload-hook)
         (doom-load (file-name-concat doom-user-dir doom-module-init-file) t)
@@ -128,10 +151,20 @@ imported into Emacs."
         (doom-load-envvars-file doom-env-file)
         (message "Reloaded %S" (abbreviate-file-name doom-env-file))))))
 
+(defvar doom-upgrade-command
+  (format "%s upgrade -B --force"
+          ;; /usr/bin/env doesn't exist on Android
+          (if (featurep :system 'android)
+              "sh %s"
+            "%s"))
+  "Command that `doom/upgrade' runs.")
 ;;;###autoload
 (defun doom/upgrade ()
   "Run 'doom upgrade' then prompt to restart Emacs."
   (interactive)
-  (doom--if-compile (format "%S upgrade --force" doom-bin)
+  (doom--if-compile doom-upgrade-command
       (when (y-or-n-p "You must restart Emacs for the upgrade to take effect.\n\nRestart Emacs?")
         (doom/restart-and-restore))))
+
+(provide 'doom-lib '(config))
+;;; config.el ends here

@@ -1,9 +1,9 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; config/default/packages.el
 
-(package! avy :pin "ba5f035be33693d1a136a5cbeedb24327f551a92")
-(package! drag-stuff :pin "6d06d846cd37c052d79acd0f372c13006aa7e7c8")
-(package! link-hint :pin "676dac6621e321b33a8d396fa27dd0ea619d21e3")
+(package! avy :pin "be612110cb116a38b8603df367942e2bb3d9bdbe")
+(package! link-hint :pin "9153eafc776549376bb85d9ff555fef83aca8285")
 
 (unless (modulep! :editor evil)
-  (package! expand-region :pin "7e5bbe2763c12bae3e77fe0c49bcad05ff91dbfe"))
+  (package! drag-stuff :pin "6d06d846cd37c052d79acd0f372c13006aa7e7c8")
+  (package! expand-region :pin "e8f4e0fe9c9a80a6a26e2b438502aba9a799d580"))

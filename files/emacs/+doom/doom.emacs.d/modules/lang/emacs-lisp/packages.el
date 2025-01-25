@@ -7,13 +7,15 @@
 (package! highlight-quoted :pin "24103478158cd19fbcfb4339a3f1fa1f054f1469")
 
 ;; Tools
-(package! macrostep :pin "424e3734a1ee526a1bd7b5c3cd1d3ef19d184267")
-(package! overseer :pin "02d49f582e80e36b4334c9187801c5ecfb027789")
-(package! elisp-def :pin "dfca043ec0cbead67bd9c526cb009daf771d0fa2")
-(package! elisp-demos :pin "01c301b516e9949d0239d20f6834afbc9acf0abb")
-(when (modulep! :checkers syntax)
-  (package! flycheck-package :pin "615c1ed8c6fb7c73abec6aaa73d3fef498d231bc")
-  (package! flycheck-cask :pin "4b2ede6362ded4a45678dfbef1876faa42edbd58"))
+(package! helpful :pin "4ba24cac9fb14d5fdc32582cd947572040e82b2c")
+(package! macrostep :pin "4939d88779761e8b5461b4cf73f86600172987db")
+(package! overseer :pin "7fdcf1a6fba6b1569a09c1666b4e51bcde266ed9")
+(package! elisp-def :pin "1ad4baccbf3d0d13e7607d332ae6bc60a5dd7360")
+(package! elisp-demos :pin "1a108d1c5011f9ced58be2ca98bea1fbd4130a2f")
+(when (and (modulep! :checkers syntax)
+           (not (modulep! :checkers syntax +flymake)))
+  (package! flycheck-package :pin "75efa098cf17dc14c363e2ca9b68afdac7766b5b")
+  (package! flycheck-cask :pin "0eeec5197e9d31bfcfc39380b262d65259a87d91"))
 
 ;; Libraries
-(package! buttercup :pin "ceedad5efa797e860dbb356bc2c3028a4e0321ec")
+(package! buttercup :pin "bf01a33f8bc2d3664121d3b20f7496e67ce55e6a")

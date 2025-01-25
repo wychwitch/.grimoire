@@ -13,7 +13,9 @@
 :in PATH
   Sets what directory to base the search out of. Defaults to the current project's root.
 :recursive BOOL
-  Whether or not to search files recursively from the base directory."
+  Whether or not to search files recursively from the base directory.
+:args LIST
+  Arguments to be appended to `consult-ripgrep-args'."
   (declare (indent defun))
   (unless (executable-find "rg")
     (user-error "Couldn't find ripgrep in your PATH"))
@@ -26,10 +28,10 @@
                   (if all-files "-uu ")
                   (unless recursive "--maxdepth 1 ")
                   "--null --line-buffered --color=never --max-columns=1000 "
-                  "--path-separator /   --smart-case --no-heading --line-number "
+                  "--path-separator /   --smart-case --no-heading "
+                  "--with-filename --line-number --search-zip "
                   "--hidden -g !.git -g !.svn -g !.hg "
-                  (mapconcat #'shell-quote-argument args " ")
-                  " ."))
+                  (mapconcat #'identity args " ")))
          (prompt (if (stringp prompt) (string-trim prompt) "Search"))
          (query (or query
                     (when (doom-region-active-p)
@@ -54,7 +56,7 @@
                                    "%")
                      :type perl)
                    consult-async-split-style 'perlalt))))))
-    (consult--grep prompt (consult--ripgrep-make-builder) directory query)))
+    (consult--grep prompt #'consult--ripgrep-make-builder directory query)))
 
 ;;;###autoload
 (defun +vertico/project-search (&optional arg initial-query directory)
@@ -112,29 +114,28 @@ Supports exporting consult-grep to wgrep, file to wdeired, and consult-location 
   "Previews candidate in vertico buffer, unless it's a consult command"
   (interactive)
   (unless (bound-and-true-p consult--preview-function)
-    (save-selected-window
-      (let ((embark-quit-after-action nil))
-        (embark-dwim)))))
+    (if (fboundp 'embark-dwim)
+        (save-selected-window
+          (let (embark-quit-after-action)
+            (embark-dwim)))
+      (user-error "Embark not installed, aborting..."))))
 
-(defvar +vertico/find-file-in--history nil)
 ;;;###autoload
-(defun +vertico/find-file-in (&optional dir initial)
-  "Jump to file under DIR (recursive).
-If INITIAL is non-nil, use as initial input."
+(defun +vertico/enter-or-preview ()
+  "Enter directory or embark preview on current candidate."
   (interactive)
-  (require 'consult)
-  (let* ((default-directory (or dir default-directory))
-         (prompt-dir (consult--directory-prompt "Find" default-directory))
-         (cmd (split-string-and-unquote +vertico-consult-fd-args " ")))
-    (find-file
-     (consult--read
-      (split-string (cdr (apply #'doom-call-process cmd)) "\n" t)
-      :prompt default-directory
-      :sort nil
-      :initial (if initial (shell-quote-argument initial))
-      :add-history (thing-at-point 'filename)
-      :category 'file
-      :history '(:input +vertico/find-file-in--history)))))
+  (when (> 0 vertico--index)
+    (user-error "No vertico session is currently active"))
+  (if (and (let ((cand (vertico--candidate)))
+             (or (string-suffix-p "/" cand)
+                 (and (vertico--remote-p cand)
+                      (string-suffix-p ":" cand))))
+           (not (equal vertico--base ""))
+           (eq 'file (vertico--metadata-get 'category)))
+      (vertico-insert)
+    (condition-case _
+        (+vertico/embark-preview)
+      (user-error (vertico-directory-enter)))))
 
 ;;;###autoload
 (defun +vertico/jump-list (jump)
@@ -208,25 +209,23 @@ targets."
                    (not (string-suffix-p "-argument" (cdr binding))))))))
 
 ;;;###autoload
-(defun +vertico--consult--fd-builder (input)
-  (pcase-let* ((cmd (split-string-and-unquote +vertico-consult-fd-args))
-               (`(,arg . ,opts) (consult--command-split input))
-               (`(,re . ,hl) (funcall consult--regexp-compiler
-                                      arg 'extended t)))
-    (when re
-      (list :command (append cmd
-                             (list (consult--join-regexps re 'extended))
-                             opts)
-            :highlight hl))))
-
-(autoload #'consult--directory-prompt "consult")
-;;;###autoload
-(defun +vertico/consult-fd (&optional dir initial)
+(defun +vertico/consult-fd-or-find (&optional dir initial)
+  "Runs consult-fd if fd version > 8.6.0 exists, consult-find otherwise.
+See minad/consult#770."
   (interactive "P")
-  (if doom-projectile-fd-binary
-      (let* ((prompt-dir (consult--directory-prompt "Fd" dir))
-             (default-directory (cdr prompt-dir)))
-        (find-file (consult--find (car prompt-dir) #'+vertico--consult--fd-builder initial)))
+  ;; TODO this condition was adapted from a similar one in lisp/doom-projects.el, to be replaced with a more robust check post v3
+  (if (when-let*
+          ((bin (if (ignore-errors (file-remote-p default-directory nil t))
+                    (cl-find-if (doom-rpartial #'executable-find t)
+                                (list "fdfind" "fd"))
+                  doom-fd-executable))
+           (version (with-memoization (get 'doom-fd-executable 'version)
+                      (cadr (split-string (cdr (doom-call-process bin "--version"))
+                                          " " t))))
+           ((ignore-errors (version-to-list version))))
+        ;; TODO remove once fd 8.6.0 is widespread enough to be the minimum version for doom
+        (version< "8.6.0" version))
+      (consult-fd dir initial)
     (consult-find dir initial)))
 
 ;;;###autoload
@@ -238,3 +237,27 @@ targets."
 (defun +vertico-basic-remote-all-completions (string table pred point)
   (and (vertico--remote-p string)
        (completion-basic-all-completions string table pred point)))
+
+;;;###autoload
+(defun +vertico-orderless-dispatch (pattern _index _total)
+  "Like `orderless-affix-dispatch', but allows affixes to be escaped."
+  (let ((len (length pattern))
+        (alist orderless-affix-dispatch-alist))
+    (when (> len 0)
+      (cond
+       ;; Ignore single dispatcher character
+       ((and (= len 1) (alist-get (aref pattern 0) alist)) #'ignore)
+       ;; Prefix
+       ((when-let ((style (alist-get (aref pattern 0) alist))
+                   ((not (char-equal (aref pattern (max (1- len) 1)) ?\\))))
+          (cons style (substring pattern 1))))
+       ;; Suffix
+       ((when-let ((style (alist-get (aref pattern (1- len)) alist))
+                   ((not (char-equal (aref pattern (max 0 (- len 2))) ?\\))))
+          (cons style (substring pattern 0 -1))))))))
+
+;;;###autoload
+(defun +vertico-orderless-disambiguation-dispatch (pattern _index _total)
+  "Ensure $ works with Consult commands, which add disambiguation suffixes."
+  (when (char-equal (aref pattern (1- (length pattern))) ?$)
+    `(orderless-regexp . ,(concat (substring pattern 0 -1) "[\x200000-\x300000]*$"))))

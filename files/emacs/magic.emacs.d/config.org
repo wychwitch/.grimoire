@@ -3,7 +3,6 @@
 #+Date: 2019
 
 
-
 * Settings without corresponding packages
 Clean up the UI and enhance some basic defaults defined in "C Source
 Code". The variable ~ian/indent-width~ controls the default
@@ -18,7 +17,7 @@ indentation width you prefer in the ~web-mode~ section.)
     :preface
     (defvar ian/indent-width 4) ; change this value to your preferred width
     :config
-    (setq frame-title-format '("Magic~⭐") ; Yayyyyy Evil!
+    (setq frame-title-format '("Magic~") ; Yayyyyy Evil!
           ring-bell-function 'ignore       ; minimize distraction
           frame-resize-pixelwise t
           default-directory "~/org")
@@ -127,7 +126,7 @@ possible to keep the configuration consistent. The option
                   ("x" . kill-buffer-and-window)
                   :map files
                   ("a" . write-file)
-  ("p". (lambda () (interactive) (find-file "c:/Git/grimoire/files/emacs/magic.emacs.d/config.org")) )
+  ("p". (lambda () (interactive) (find-file "~/grimoire/files/emacs/magic.emacs.d/config.org")) )
                   ("c" . copy-file)
                   ("f" . counsel-find-file)
                   ("i" . insert-file)
@@ -366,12 +365,11 @@ Normally, we need to add ~:ensure t~ to tell ~use-package~ to download packages 
 *** Dashboard welcome page
 #+BEGIN_SRC emacs-lisp
   (use-package dashboard
+     :ensure t
      :config
-      (dashboard-setup-startup-hook)
-      (setq dashboard-startup-banner "C:/Git/grimoire/files/emacs/magic.emacs.d/logos/logo.svg"
-       dashboard-banner-logo-title "Magic~⭐"
-       dashboard-image-banner-max-width 450
-       dashboard-image-banner-max-height 450
+      (setq dashboard-startup-banner "~/grimoire/files/emacs/magic.emacs.d/logos/logo.svg"
+       dashboard-banner-logo-title "Magic~"
+       dashboard-image-banner-max-height 350
        dashboard-set-footer nil
        dashboard-center-content t
        dashboard-items '((bookmarks . 3)
@@ -379,6 +377,7 @@ Normally, we need to add ~:ensure t~ to tell ~use-package~ to download packages 
                          (agenda . 5)
                          (registers . 5))
        initial-buffer-choice (lambda () (get-buffer-create "*dashboard*"))))
+      (dashboard-setup-startup-hook)
 #+END_SRC
 *** Syntax highlighting
 Lightweight syntax highlighting improvement for numbers and escape
@@ -565,59 +564,58 @@ h3...) a more visually pleasing look.
 #+END_SRC
 **** Alters
 #+BEGIN_SRC emacs-lisp
-  (defface w-text '((t ( :foreground "#D1A0EA" :inherit text ) )) "Witch's Text" :group 'org-mode)
-  (defvar w-text 'w-text)
+    (defface w-text '((t ( :foreground "#D1A0EA" :inherit text ) )) "Witch's Text" :group 'org-mode)
+    (defvar w-text 'w-text)
 
-  (defface c-text '((t (:foreground "#ec51cd" :inherit text ) )) "Celeste's Text" :group 'org-mode )
-  (defvar c-text 'c-text)
+    (defface c-text '((t (:foreground "#ec51cd" :inherit text ) )) "Celeste's Text" :group 'org-mode )
+    (defvar c-text 'c-text)
 
-  (defface m-text '((t (:foreground "#5459b6" :inherit text ) )) "Magician's Text" :group 'org-mode )
-  (defvar m-text 'm-text)
+    (defface m-text '((t (:foreground "#5459b6" :inherit text ) )) "Magician's Text" :group 'org-mode )
+    (defvar m-text 'm-text)
 
-  (defface n-text '((t (:foreground "#6a6273" :inherit text ) )) "Nyx's Text" :group 'org-mode )
-  (defvar n-text 'n-text)
+    (defface n-text '((t (:foreground "#6a6273" :inherit text ) )) "Nyx's Text" :group 'org-mode )
+    (defvar n-text 'n-text)
 
-  (defface g-text '((t (:foreground "#76e37a" :inherit text ) )) "Gidget's Text" :group 'org-mode )
-  (defvar g-text 'g-text)
-
-
-  (defface g-text '((t (:foreground "#6a6273" :inherit text :weight extra-bold) )) "Gidgit's Text" :group 'org-mode )
-  (defvar g-text 'g-text)
-  ;;; Add keywords
-  (defun add-alter-keywords()
-    "adds custom keywords for highlighting text in org-mode."
-    (font-lock-add-keywords nil
-          '(("^w: .*$" . 'w-text))
-          )
-     (font-lock-add-keywords nil
-          '(("^m: .*$" . 'm-text))
-          )
-     (font-lock-add-keywords nil
-          '(("^c: .*$" . 'c-text))
-          )
-     (font-lock-add-keywords nil
-          '(("^n: .*$" . 'n-text))
-          )
-(font-lock-add-keywords nil
-          '(("^g: .*$" . 'g-text))
-          )
-     )
-  (add-hook 'org-mode-hook 'add-alter-keywords)
+    (defface g-text '((t (:foreground "#76e37a" :inherit text ) )) "Gidget's Text" :group 'org-mode )
+    (defvar g-text 'g-text)
 
 
-(defun display-persona-names()
-(use-package ov
-  :ensure t)
- (ov-set (ov-regexp "^m:") 'display "<magician>")
- (ov-set (ov-regexp "^w:") 'display "<witch>")
- (ov-set (ov-regexp "^c:") 'display "<celeste>")
- (ov-set (ov-regexp "^n:") 'display "<nyx>")
- (ov-set (ov-regexp "^g:") 'display "<gidget>")
+    (defface g-text '((t (:foreground "#6a6273" :inherit text :weight extra-bold) )) "Gidgit's Text" :group 'org-mode )
+    (defvar g-text 'g-text)
+    ;;; Add keywords
+    (defun add-alter-keywords()
+      "adds custom keywords for highlighting text in org-mode."
+      (font-lock-add-keywords nil
+            '(("^w: .*$" . 'w-text))
+            )
+       (font-lock-add-keywords nil
+            '(("^m: .*$" . 'm-text))
+            )
+       (font-lock-add-keywords nil
+            '(("^c: .*$" . 'c-text))
+            )
+       (font-lock-add-keywords nil
+            '(("^n: .*$" . 'n-text))
+            )
+  (font-lock-add-keywords nil
+            '(("^g: .*$" . 'g-text))
+            )
+       )
+    (add-hook 'org-mode-hook 'add-alter-keywords)
 
-  )
-(add-hook 'org-mode-hook 'display-persona-names)
-(add-hook 'after-save-hook 'display-persona-names)
 
+  (defun display-persona-names()
+  (use-package ov
+    :ensure t)
+   (ov-set (ov-regexp "^m:") 'display "<magician>")
+   (ov-set (ov-regexp "^w:") 'display "<witch>")
+   (ov-set (ov-regexp "^c:") 'display "<celeste>")
+   (ov-set (ov-regexp "^n:") 'display "<nyx>")
+   (ov-set (ov-regexp "^g:") 'display "<gidget>")
+
+    )
+  (add-hook 'org-mode-hook 'display-persona-names)
+  (add-hook 'after-save-hook 'display-persona-names)
 #+END_SRC
 *** Useful major modes
 Markdown mode and Web mode, the latter covers our usages of HTML/CSS/JS/JSX/TS/TSX/JSON.

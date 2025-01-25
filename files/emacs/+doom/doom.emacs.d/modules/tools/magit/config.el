@@ -21,7 +21,7 @@ Only has an effect in GUI Emacs.")
   :defer-incrementally (dash f s with-editor git-commit package eieio transient)
   :init
   (setq magit-auto-revert-mode nil)  ; we do this ourselves further down
-  ;; Must be set early to prevent ~/.emacs.d/transient from being created
+  ;; Must be set early to prevent ~/.config/emacs/transient from being created
   (setq transient-levels-file  (concat doom-data-dir "transient/levels")
         transient-values-file  (concat doom-data-dir "transient/values")
         transient-history-file (concat doom-data-dir "transient/history"))
@@ -49,10 +49,6 @@ Only has an effect in GUI Emacs.")
     (+magit-mark-stale-buffers-h))
   ;; ...then refresh the rest only when we switch to them, not all at once.
   (add-hook 'doom-switch-buffer-hook #'+magit-revert-buffer-maybe-h)
-
-  ;; Center the target file, because it's poor UX to have it at the bottom of
-  ;; the window after invoking `magit-status-here'.
-  (advice-add #'magit-status-here :after #'doom-recenter-a)
 
   ;; The default location for git-credential-cache is in
   ;; ~/.cache/git/credential. However, if ~/.git-credential-cache/ exists, then
@@ -157,39 +153,11 @@ Only has an effect in GUI Emacs.")
   ;; All forge list modes are derived from `forge-topic-list-mode'
   (map! :map forge-topic-list-mode-map :n "q" #'kill-current-buffer)
   (when (not forge-add-default-bindings)
-    (map! :map magit-mode-map [remap magit-browse-thing] #'forge-browse-dwim
+    (map! :map magit-mode-map [remap magit-browse-thing] #'forge-browse
           :map magit-remote-section-map [remap magit-browse-thing] #'forge-browse-remote
           :map magit-branch-section-map [remap magit-browse-thing] #'forge-browse-branch))
   (set-popup-rule! "^\\*?[0-9]+:\\(?:new-\\|[0-9]+$\\)" :size 0.45 :modeline t :ttl 0 :quit nil)
-  (set-popup-rule! "^\\*\\(?:[^/]+/[^ ]+ #[0-9]+\\*$\\|Issues\\|Pull-Requests\\|forge\\)" :ignore t)
-
-  (defadvice! +magit--forge-get-repository-lazily-a (&rest _)
-    "Make `forge-get-repository' return nil if the binary isn't built yet.
-This prevents emacsql getting compiled, which appears to come out of the blue
-and blocks Emacs for a short while."
-    :before-while #'forge-get-repository
-    (file-executable-p emacsql-sqlite-executable))
-
-  (defadvice! +magit--forge-build-binary-lazily-a (&rest _)
-    "Make `forge-dispatch' only build emacsql if necessary.
-Annoyingly, the binary gets built as soon as Forge is loaded. Since we've
-disabled that in `+magit--forge-get-repository-lazily-a', we must manually
-ensure it is built when we actually use Forge."
-    :before #'forge-dispatch
-    (unless (file-executable-p emacsql-sqlite-executable)
-      (emacsql-sqlite-compile 2)
-      (if (not (file-executable-p emacsql-sqlite-executable))
-          (message (concat "Failed to build emacsql; forge may not work correctly.\n"
-                           "See *Compile-Log* buffer for details"))
-        ;; HACK Due to changes upstream, forge doesn't initialize completely if
-        ;;      it doesn't find `emacsql-sqlite-executable', so we have to do it
-        ;;      manually after installing it.
-        (setq forge--sqlite-available-p t)
-        (magit-add-section-hook 'magit-status-sections-hook 'forge-insert-pullreqs nil t)
-        (magit-add-section-hook 'magit-status-sections-hook 'forge-insert-issues   nil t)
-        (after! forge-topic
-          (dolist (hook forge-bug-reference-hooks)
-            (add-hook hook #'forge-bug-reference-setup)))))))
+  (set-popup-rule! "^\\*\\(?:[^/]+/[^ ]+ #[0-9]+\\*$\\|Issues\\|Pull-Requests\\|forge\\)" :ignore t))
 
 
 (use-package! code-review
@@ -213,17 +181,6 @@ ensure it is built when we actually use Forge."
   (after! forge
     (transient-append-suffix 'forge-dispatch "c u"
       '("c r" "Review pull request" +magit/start-code-review))))
-
-
-(use-package! magit-todos
-  :after magit
-  :config
-  (setq magit-todos-keyword-suffix "\\(?:([^)]+)\\)?:?") ; make colon optional
-  (define-key magit-todos-section-map "j" nil))
-
-
-(use-package! magit-gitflow
-  :hook (magit-mode . turn-on-magit-gitflow))
 
 
 (use-package! evil-collection-magit
@@ -263,7 +220,10 @@ ensure it is built when we actually use Forge."
         (:map magit-status-mode-map
          :nv "gz" #'magit-refresh)
         (:map magit-diff-mode-map
-         :nv "gd" #'magit-jump-to-diffstat-or-diff))
+         :nv "gd" #'magit-jump-to-diffstat-or-diff)
+        ;; Don't open recursive process buffers
+        (:map magit-process-mode-map
+         :nv "`" #'ignore))
 
   ;; A more intuitive behavior for TAB in magit buffers:
   (define-key! 'normal
@@ -280,13 +240,7 @@ ensure it is built when we actually use Forge."
         (setcar desc (cdr key))))
     (evil-define-key* evil-collection-magit-state git-rebase-mode-map
       "gj" #'git-rebase-move-line-down
-      "gk" #'git-rebase-move-line-up))
-
-  (after! magit-gitflow
-    (evil-define-key* '(normal visual) magit-mode-map
-      "%" #'magit-gitflow-popup)
-    (transient-append-suffix 'magit-dispatch 'magit-worktree
-      '("%" "Gitflow" magit-gitflow-popup))))
+      "gk" #'git-rebase-move-line-up)))
 
 
 (use-package! evil-collection-magit-section
@@ -301,3 +255,24 @@ ensure it is built when we actually use Forge."
     (undefine-key! magit-section-mode-map "M-1" "M-2" "M-3" "M-4" "1" "2" "3" "4" "0")
     ;; `evil-collection-magit-section' binds these redundant keys.
     (map! :map magit-section-mode-map :n "1" nil :n "2" nil :n "3" nil :n "4" nil)))
+
+
+(use-package! git-commit
+  :hook (doom-first-file . global-git-commit-mode)
+  :config
+  (set-yas-minor-mode! 'git-commit-mode)
+
+  ;; Enforce git commit conventions.
+  ;; See https://chris.beams.io/posts/git-commit/
+  (setq git-commit-summary-max-length 50
+        git-commit-style-convention-checks '(overlong-summary-line non-empty-second-line))
+  (setq-hook! 'git-commit-mode-hook fill-column 72)
+
+  (add-hook! 'git-commit-setup-hook
+    (defun +vc-start-in-insert-state-maybe-h ()
+      "Start git-commit-mode in insert state if in a blank commit message,
+otherwise in default state."
+      (when (and (bound-and-true-p evil-local-mode)
+                 (not (evil-emacs-state-p))
+                 (bobp) (eolp))
+        (evil-insert-state)))))

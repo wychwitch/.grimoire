@@ -126,6 +126,9 @@
        :desc "Search .emacs.d"              "e" #'+default/search-emacsd
        :desc "Locate file"                  "f" #'+lookup/file
        :desc "Jump to symbol"               "i" #'imenu
+       :desc "Jump to symbol in open buffers" "I"
+       (cond ((modulep! :completion vertico)   #'consult-imenu-multi)
+             ((modulep! :completion helm)      #'helm-imenu-in-all-buffers))
        :desc "Jump to visible link"         "l" #'link-hint-open-link
        :desc "Jump to link"                 "L" #'ffap-menu
        :desc "Jump to bookmark"             "m" #'bookmark-jump
@@ -145,7 +148,10 @@
 
       ;;; <leader> i --- insert
       (:prefix-map ("i" . "insert")
-       :desc "Emoji"                         "e"   #'emojify-insert-emoji
+       (:when (> emacs-major-version 28)
+         :desc "Emoji"                       "e"   #'emoji-search)
+       (:when (modulep! :ui emoji)
+         :desc "Emoji"                       "e"   #'emojify-insert-emoji)
        :desc "Current file name"             "f"   #'+default/insert-file-path
        :desc "Current file path"             "F"   (cmd!! #'+default/insert-file-path t)
        :desc "Snippet"                       "s"   #'yas-insert-snippet
@@ -164,9 +170,10 @@
 
        :desc "Toggle last org-clock"          "c" #'+org/toggle-last-clock
        :desc "Cancel current org-clock"       "C" #'org-clock-cancel
-       :desc "Open deft"                      "d" #'deft
+       (:when (modulep! :ui deft)
+        :desc "Open deft"                     "d" #'deft)
        (:when (modulep! :lang org +noter)
-        :desc "Org noter"                    "e" #'org-noter)
+        :desc "Org noter"                     "e" #'org-noter)
 
        :desc "Find file in notes"             "f" #'+default/find-in-notes
        :desc "Browse notes"                   "F" #'+default/browse-notes
@@ -242,6 +249,10 @@
        (:when (modulep! :ui treemacs)
         :desc "Project sidebar"               "p" #'+treemacs/toggle
         :desc "Find file in project rsidebar" "P" #'treemacs-find-file)
+       (:when (modulep! :emacs dired +dirvish)
+        :desc "Open directory in dirvish"     "/" #'dirvish
+        :desc "Project sidebar"               "p" #'dirvish-side
+        :desc "Find file in project sidebar"  "P" #'+dired/dirvish-side-and-follow)
        (:when (modulep! :term shell)
         :desc "Toggle shell popup"            "t" #'+shell/toggle
         :desc "Open shell here"               "T" #'+shell/here)
@@ -278,7 +289,6 @@
        :desc "Search project for symbol"   "." #'+default/search-project-for-symbol-at-point
        :desc "Find file in other project"  "F" #'doom/find-file-in-other-project
        :desc "Search project"              "s" #'+default/search-project
-       :desc "List project todos"          "t" #'magit-todos-list
        :desc "Open project scratch buffer" "x" #'doom/open-project-scratch-buffer
        :desc "Switch to project scratch buffer" "X" #'doom/switch-to-project-scratch-buffer
        (:when (and (modulep! :tools taskrunner)
@@ -328,7 +338,7 @@
        (:when (modulep! :checkers syntax)
         :desc "Flycheck"                   "f" #'flycheck-mode)
        (:when (modulep! :ui indent-guides)
-        :desc "Indent guides"              "i" #'highlight-indent-guides-mode)
+        :desc "Indent guides"              "i" #'indent-bars-mode)
        (:when (modulep! :ui minimap)
         :desc "Minimap mode"               "m" #'minimap-mode)
        (:when (modulep! :lang org +present)
@@ -406,7 +416,8 @@
         :desc "Rename workspace"             "r" #'+workspace/rename
         :desc "Create workspace"             "c" #'+workspace/new
         :desc "Create named workspace"       "C" #'+workspace/new-named
-        :desc "Delete workspace"             "k" #'+workspace/delete
+        :desc "Delete workspace"             "k" #'+workspace/kill
+        :desc "Delete saved workspace"       "K" #'+workspace/delete
         :desc "Save workspace"               "S" #'+workspace/save
         :desc "Switch to other workspace"    "o" #'+workspace/other
         :desc "Switch to left workspace"     "p" #'+workspace/switch-left
@@ -463,15 +474,7 @@
         (:when (modulep! :completion ivy)
          :desc "Jump to channel"  "j" #'+irc/ivy-jump-to-channel)
         (:when (modulep! :completion vertico)
-         :desc "Jump to channel"  "j" #'+irc/vertico-jump-to-channel)))
-
-      ;;; <leader> T --- twitter
-      (:when (modulep! :app twitter)
-       (:prefix-map ("T" . "twitter")
-        :desc "Open twitter app" "T" #'=twitter
-        :desc "Quit twitter"     "q" #'+twitter/quit
-        :desc "Rerender twits"   "r" #'+twitter/rerender-all
-        :desc "Ace link"         "l" #'+twitter/ace-link)))
+         :desc "Jump to channel"  "j" #'+irc/vertico-jump-to-channel))))
 
 
 ;;
@@ -505,9 +508,10 @@
       "C-x C-b"     #'ibuffer
       "C-x K"       #'doom/kill-this-buffer-in-all-windows
 
-      ;;; company-mode
-      "C-;" #'+company/complete
-      (:after company
+      ;;; completion (in-buffer)
+      (:when (modulep! :completion company)
+       "C-;" #'+company/complete
+       (:after company
         :map company-active-map
         "C-o"        #'company-search-kill-others
         "C-n"        #'company-select-next
@@ -528,7 +532,7 @@
         :map company-search-map
         "C-n"        #'company-search-repeat-forward
         "C-p"        #'company-search-repeat-backward
-        "C-s"        (cmd! (company-search-abort) (company-filter-candidates)))
+        "C-s"        (cmd! (company-search-abort) (company-filter-candidates))))
 
       ;;; ein notebooks
       (:after ein:notebook-multilang
@@ -553,9 +557,6 @@
         "<" #'help-go-back
         "n" #'forward-button
         "p" #'backward-button)
-      (:after helpful
-        :map helpful-mode-map
-        "o" #'link-hint-open-link)
       (:after apropos
         :map apropos-mode-map
         "o" #'link-hint-open-link

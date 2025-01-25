@@ -2,11 +2,11 @@
 ;;; lang/web/packages.el
 
 ;; +html.el
-(package! emmet-mode :pin "6b2e554f7fd27f732810f4b14ea01e3c54b7b3da")
-(package! haml-mode :pin "bf5b6c11b1206759d2b28af48765e04882dd1fc4")
+(package! emmet-mode :pin "322d3bb112fced57d63b44863357f7a0b7eee1e3")
+(package! haml-mode :pin "a64d58df8f098f858c6c11fa1629a90969f9c7e8")
 (package! pug-mode :pin "73f8c2f95eba695f701df20c8436f49abadebdc1")
-(package! slim-mode :pin "3636d18ab1c8b316eea71c4732eb44743e2ded87")
-(when (package! web-mode :pin "efa853e5cfff8e0bcacbda9d1c6696b33da91b03")
+(package! slim-mode :pin "8c92169817f2fa59255f547f0a9fb4fbb8309db9")
+(when (package! web-mode :pin "0c83581d1e93d1d802c730a1d5e90cd1c740e1b2")
   (when (modulep! :completion company)
     (package! company-web :pin "863fb84b81ed283474e50330cd8d27b1ca0d74f1")))
 
@@ -17,8 +17,8 @@
 (package! sass-mode :pin "247a0d4b509f10b28e4687cd8763492bca03599b")
 (package! stylus-mode :pin "1ad7c51f3c6a6ae64550d9510c5e4e8470014375")
 (package! sws-mode :pin "1ad7c51f3c6a6ae64550d9510c5e4e8470014375")
-(package! rainbow-mode :pin "949166cc0146bc9fabf74ce70c1c4a097f4cffd4")
+(package! rainbow-mode :pin "2e6b18609c2fdd1a2dc513937a64d276fd6cf24c")
 (when (modulep! :completion ivy)
   (package! counsel-css :pin "8e9c0515fc952452eee786d8ebb43d48ea86c9f8"))
 (when (modulep! :completion helm)
-  (package! helm-css-scss :pin "48b996f73af1fef8d6e88a1c545d98f8c50b0cf3"))
+  (package! helm-css-scss :pin "2169d83d8fdc661241df208cb3235112735d936e"))

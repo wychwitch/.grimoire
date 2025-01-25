@@ -119,11 +119,11 @@ uses a straight or package.el command directly).")
   (append (apply fn args) ; lockfiles still take priority
           (doom-package-pinned-list)))
 
-;; HACK: This fixes an issue present in recent builds of Emacs 29. See
-;;   emacs-mirror/emacs@0d383b592c2f. Straight.el uses `loaddefs-generate' if it
-;;   is available, which activates `emacs-lisp-mode' to read autoloads files,
-;;   but does so without suppressing its hooks. Some packages (like overseer)
-;;   add hooks to `emacs-lisp-mode-hook' in their autoloads, and once triggered,
+;; HACK: This fixes an issue introduced in emacs-mirror/emacs@0d383b592c2f and
+;;   is present in >=29: Straight.el uses `loaddefs-generate' if it is
+;;   available, which activates `emacs-lisp-mode' to read autoloads files, but
+;;   does so without suppressing its hooks. Some packages (like overseer) add
+;;   hooks to `emacs-lisp-mode-hook' in their autoloads, and once triggered,
 ;;   they will try to load their dependencies (like dash or pkg-info), causing
 ;;   file errors.
 ;; REVIEW: Report this upstream.
@@ -140,7 +140,8 @@ uses a straight or package.el command directly).")
   (after! comp
     ;; HACK Disable native-compilation for some troublesome packages
     (mapc (doom-partial #'add-to-list 'native-comp-deferred-compilation-deny-list)
-          (list "/emacs-jupyter.*\\.el\\'"
+          (list "/seq-tests\\.el\\'"
+                "/emacs-jupyter.*\\.el\\'"
                 "/evil-collection-vterm\\.el\\'"
                 "/vterm\\.el\\'"
                 "/with-editor\\.el\\'"))))
@@ -256,7 +257,7 @@ uses a straight or package.el command directly).")
           (alist-get 'straight packages)
         (doom--ensure-straight recipe pin))
       (doom--ensure-core-packages
-       (seq-filter (fn! (eq (plist-get % :type) 'core))
+       (seq-filter (fn! (eq (plist-get (cdr %) :type) 'core))
                    packages)))))
 
 (defun doom-initialize-packages (&optional force-p)
@@ -567,7 +568,7 @@ elsewhere."
                            nil))))
      ;; Merge given plist with pre-existing one
      (cl-loop for (key value) on (list ,@plist) by 'cddr
-              when value
+              when (or (eq key :pin) value)
               do (cl-callf plist-put plist key value))
      ;; Some basic key validation; throws an error on invalid properties
      (condition-case e
@@ -606,8 +607,8 @@ Only use this macro in a module's (or your private) packages.el file."
 (defmacro unpin! (&rest targets)
   "Unpin packages in TARGETS.
 
-This unpins packages, so that 'doom upgrade' downloads their latest version. It
-can be used one of five ways:
+This unpins packages, so that `doom upgrade' or `doom sync -u' will update them
+to the latest commit available. Some examples:
 
 - To disable pinning wholesale: (unpin! t)
 - To unpin individual packages: (unpin! packageA packageB ...)

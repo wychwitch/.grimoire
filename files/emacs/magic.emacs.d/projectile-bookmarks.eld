@@ -1,1 +1,1 @@
-("c:/Git/_writings/fiction/prose/" "c:/Git/grimoire/")
+("~/grimoire/")

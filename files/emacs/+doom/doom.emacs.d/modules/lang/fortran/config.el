@@ -5,6 +5,7 @@
 
 (use-package! f90
   :defer t
+  :mode ("\\.F90" . f90-mode)
   :config
   ;; --- Compilation --- ;;
   ;; Used by `compile' (SPC c c)
@@ -26,12 +27,15 @@
         (:prefix ("f" . "fpm")
          :desc "fpm build" "b" #'+fortran/fpm-build
          :desc "fpm run"   "r" #'+fortran/fpm-run
-         :desc "fpm test"  "t" #'+fortran/fpm-test)
+         :desc "fpm test"  "t" #'+fortran/fpm-test
+         :desc "Open project config" "o" #'+fortran/fpm-open-project-toml)
         (:prefix ("g" . "gfortran")
          :desc "compile" "c" #'+fortran/gfortran-compile
          :desc "run"     "r" #'+fortran/gfortran-run)
         :desc "build" "b" #'+fortran/build
         :desc "run"   "r" #'+fortran/run)
+
+  (set-formatter! 'fprettify '("fprettify" "-") :modes '(f90-mode fortran-mode))
 
   (when (modulep! +intel)
     (map! :map f90-mode-map
@@ -46,11 +50,12 @@
       ["Run" +fortran/run :active t :help "Run the Executable"]
       ["Test" +fortran/fpm-test :active (+fortran--fpm-toml) :help "Run the Unit Tests"])))
 
+
 (use-package! fortran
   ;; The `.for' extension is automatically recognized by Emacs and invokes
   ;; `fortran-mode', but not its capital variant `.FOR'. Many old files are
   ;; named the latter way, so we account for that manually here.
-  :mode ("\\.FOR$" . fortran-mode)
+  :mode ("\\.FOR\\'" . fortran-mode)
   :config
   ;; Or else Flycheck will get very mad.
   (setq flycheck-gfortran-language-standard "legacy")

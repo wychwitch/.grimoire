@@ -10,8 +10,10 @@
   (unless (or langtool-bin
               langtool-language-tool-jar
               langtool-java-classpath)
-    (cond ((setq langtool-bin (executable-find "languagetool")))
-          (IS-MAC
+    (cond ((setq langtool-bin
+                 (or (executable-find "languagetool-commandline")
+                     (executable-find "languagetool"))))  ; for nixpkgs.languagetool
+          ((featurep :system 'macos)
            (cond
             ;; is user using home brew?
             ((file-directory-p "/usr/local/Cellar/languagetool")
@@ -23,7 +25,7 @@
             ;; macports compatibility
             ((file-directory-p "/opt/local/share/java/LanguageTool")
              (setq langtool-java-classpath "/opt/local/share/java/LanguageTool/*"))))
-          (IS-LINUX
+          ((featurep :system 'linux)
            (setq langtool-java-classpath "/usr/share/languagetool:/usr/share/java/languagetool/*")))))
 
 

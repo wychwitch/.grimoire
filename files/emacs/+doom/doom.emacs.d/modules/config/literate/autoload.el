@@ -41,10 +41,19 @@
                 (org-confirm-babel-evaluate nil)
                 ;; Say a little more
                 (doom-print-message-level 'info))
-            (if-let (files (org-babel-tangle-file target dest))
-                (always (print! (success "Done tangling %d file(s)!" (length files))))
-              (print! (error "Failed to tangle any blocks from your config."))
-              nil))))))
+            (cond ((not (file-exists-p target))
+                   (print! (warn "No org file at %s. Skipping...") (path target))
+                   nil)
+                  ((with-temp-buffer
+                     (insert-file-contents target)
+                     (let ((case-fold-search t))
+                       (not (re-search-forward "^ *#\\+begin_src e\\(?:macs-\\)?lisp" nil t))))
+                   (print! (warn "No src blocks to tangle in %s. Skipping...") (path target))
+                   nil)
+                  ((if-let (files (org-babel-tangle-file target dest))
+                       (always (print! (success "Done tangling %d file(s)!" (length files))))
+                     (print! (error "Failed to tangle any blocks from your config."))
+                     nil))))))))
 
 (defun +literate-tangle--sync ()
   "Tangles `+literate-config-file' if it has changed."
@@ -106,6 +115,41 @@
 ;;;###autoload
 (defalias '+literate/reload #'doom/reload)
 
+(defun +literate--flatten-imenu-index (index &optional prefix)
+  "Flatten an org-mode imenu index."
+  (let ((flattened '()))
+    (dolist (item index flattened)
+      (let* ((name (propertize (car item) 'face (intern (format "org-level-%d" (if prefix (+ 2 (cl-count ?/ prefix)) 1)))))
+             (prefix (if prefix (concat prefix "/" name) name)))
+        (if (imenu--subalist-p item)
+            (setq flattened (append flattened (+literate--flatten-imenu-index (cdr item) prefix)))
+          (push (cons prefix (cdr item)) flattened))))
+    (nreverse flattened)))
+
+(defvar imenu-auto-rescan)
+;;;###autoload
+(defun +literate/find-heading (&optional level)
+  "Jump to a heading in your literate org config file."
+  (interactive "P")
+  (let* ((buffer (or (find-buffer-visiting +literate-config-file)
+                     (find-file-noselect +literate-config-file t))))
+    (with-current-buffer buffer
+      (let* ((imenu-auto-rescan t)
+             (org-imenu-depth (or level 8))
+             (index (+literate--flatten-imenu-index (imenu--make-index-alist))))
+        (let ((c (current-window-configuration))
+              (result nil))
+          (unwind-protect
+              (progn
+                (switch-to-buffer buffer)
+                (if (modulep! :completion vertico)
+                    (setq result (consult-outline level))
+                  (let ((entry (assoc (completing-read "Go to heading: " index nil t) index)))
+                    (setq result entry)
+                    (imenu entry))))
+            (unless result
+              (set-window-configuration c))))))))
+
 
 ;;
 ;;; Hooks
@@ -137,11 +181,11 @@ This is performed with an asyncronous Emacs process, except when
 (defun +literate-recompile-maybe-h ()
   "Recompile literate config to `doom-user-dir'.
 
-We assume any org file in `doom-user-dir' is connected to your literate
-config, and should trigger a recompile if changed."
+We assume any org file in `doom-user-dir' is connected to your literate config,
+and should trigger a recompile if changed."
   (and (file-in-directory-p
         (buffer-file-name (buffer-base-buffer))
-        (file-name-directory +literate-config-file))
+        (file-name-directory (file-truename +literate-config-file)))
        (+literate-tangle-h)))
 
 ;;; autoload.el ends here

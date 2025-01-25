@@ -1,4 +1,4 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; lang/erlang/packages.el
 
-(package! erlang :pin "9ba9f6e60da146b8c05e0062b7aecee823dd08ec")
+(package! erlang :pin "c66bf53cde597f595a3ce5fb4ddc1b0caa9996ce")

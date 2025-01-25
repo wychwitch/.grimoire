@@ -116,12 +116,6 @@ results buffer.")
   :config
   (setq ivy-rich-parse-remote-buffer nil)
 
-  (when (modulep! +icons)
-    (cl-pushnew '(+ivy-rich-buffer-icon)
-                (cadr (plist-get ivy-rich-display-transformers-list
-                                 'ivy-switch-buffer))
-                :test #'equal))
-
   (defun ivy-rich-bookmark-filename-or-empty (candidate)
     (let ((filename (ivy-rich-bookmark-filename candidate)))
       (if (not filename) "" filename)))
@@ -155,25 +149,16 @@ results buffer.")
               (switch-buffer-alist (assq 'ivy-rich-candidate (plist-get plist :columns))))
     (setcar switch-buffer-alist '+ivy-rich-buffer-name))
 
+  (when (modulep! +icons)
+    (nerd-icons-ivy-rich-mode +1))
   (ivy-rich-mode +1)
   (ivy-rich-project-root-cache-mode +1))
 
 
-(use-package! all-the-icons-ivy
+(use-package! nerd-icons-ivy-rich
   :when (modulep! +icons)
-  :after ivy
-  :config
-  ;; `all-the-icons-ivy' is incompatible with ivy-rich's switch-buffer
-  ;; modifications, so we disable them and merge them ourselves
-  (setq all-the-icons-ivy-buffer-commands nil)
-
-  (all-the-icons-ivy-setup)
-  (after! counsel-projectile
-    (let ((all-the-icons-ivy-file-commands
-           '(counsel-projectile
-             counsel-projectile-find-file
-             counsel-projectile-find-dir)))
-      (all-the-icons-ivy-setup))))
+  :commands (nerd-icons-ivy-rich-mode)
+  :after counsel-projectile)
 
 
 (use-package! counsel
@@ -226,10 +211,20 @@ results buffer.")
   (when (stringp counsel-rg-base-command)
     (setq counsel-rg-base-command (split-string counsel-rg-base-command)))
 
-  ;; Integrate with `helpful'
-  (setq counsel-describe-function-function #'helpful-callable
-        counsel-describe-variable-function #'helpful-variable
-        counsel-descbinds-function #'helpful-callable)
+  ;; REVIEW: See abo-abo/swiper#2339.
+  (defadvice! +counsel-rg-suppress-error-code-a (fn &rest args)
+    "Ripgrep returns a non-zero exit code if it encounters any trouble (e.g. you
+don't have the needed permissions for a couple files/directories in a project).
+Even if rg continues to produce workable results, that non-zero exit code causes
+counsel-rg to discard the rest of the output to display an error.
+
+This advice suppresses the error code, so you can still operate on whatever
+workable results ripgrep produces, despite the error."
+    :around #'counsel-rg
+    (letf! (defun process-exit-status (proc)
+             (let ((code (funcall process-exit-status proc)))
+               (if (= code 2) 0 code)))
+      (apply fn args)))
 
   ;; Decorate `doom/help-custom-variable' results the same way as
   ;; `counsel-describe-variable' (adds value and docstring columns).
@@ -237,7 +232,6 @@ results buffer.")
 
   ;; Record in jumplist when opening files via counsel-{ag,rg,pt,git-grep}
   (add-hook 'counsel-grep-post-action-hook #'better-jumper-set-jump)
-  (add-hook 'counsel-grep-post-action-hook #'recenter)
   (ivy-add-actions
    'counsel-rg ; also applies to `counsel-rg'
    '(("O" +ivy-git-grep-other-window-action "open in other window")))
@@ -253,7 +247,7 @@ results buffer.")
   (add-to-list 'ivy-sort-functions-alist '(counsel-imenu))
 
   ;; `counsel-locate'
-  (when IS-MAC
+  (when (featurep :system 'macos)
     ;; Use spotlight on mac by default since it doesn't need any additional setup
     (setq counsel-locate-cmd #'counsel-locate-cmd-mdfind))
 
@@ -287,18 +281,18 @@ results buffer.")
     "Change `counsel-file-jump' to use fd or ripgrep, if they are available."
     :override #'counsel--find-return-list
     (cl-destructuring-bind (find-program . args)
-        (cond ((when-let (fd (executable-find (or doom-projectile-fd-binary "fd") t))
+        (cond ((when-let (fd (executable-find (or doom-fd-executable "fd") t))
                  (append (list fd "--hidden" "--type" "file" "--type" "symlink" "--follow" "--color=never")
                          (cl-loop for dir in projectile-globally-ignored-directories
                                   collect "--exclude"
                                   collect dir)
-                         (if IS-WINDOWS '("--path-separator=/")))))
+                         (if (featurep :system 'windows) '("--path-separator=/")))))
               ((executable-find "rg" t)
                (append (list "rg" "--hidden" "--files" "--follow" "--color=never" "--no-messages")
                        (cl-loop for dir in projectile-globally-ignored-directories
                                 collect "--glob"
                                 collect (concat "!" dir))
-                       (if IS-WINDOWS '("--path-separator=/"))))
+                       (if (featurep :system 'windows) '("--path-separator=/"))))
               ((cons find-program args)))
       (unless (listp args)
         (user-error "`counsel-file-jump-args' is a list now, please customize accordingly."))
@@ -315,7 +309,7 @@ results buffer.")
 
 
 (use-package! counsel-projectile
-  :defer t
+  :after ivy-rich
   :init
   (define-key!
     [remap projectile-find-file]        #'+ivy/projectile-find-file
